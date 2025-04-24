@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ProductCard from "./ProductCart";
 import Cart from "./Cart";
 import { Product, CartItem } from "./types";
-import "./App.css";
+// import "./App.css";
 
 // Mock Products Data
 const products: Product[] = [
@@ -49,8 +49,24 @@ const App: React.FC = () => {
 		}
 	};
 
+	const updateQuantity = (id: number, quantity: number) => {
+		if (quantity <= 0) {
+			setCart(cart.filter((item) => item.product.id !== id));
+		} else {
+			setCart(
+				cart.map((item) =>
+					item.product.id === id ? { ...item, quantity } : item
+				)
+			);
+		}
+	};
+
 	const removeFromCart = (id: number) => {
 		setCart(cart.filter((item) => item.product.id !== id));
+	};
+
+	const clearCart = () => {
+		setCart([]);
 	};
 
 	return (
@@ -67,7 +83,12 @@ const App: React.FC = () => {
 					/>
 				))}
 			</div>
-			<Cart cartItems={cart} removeFromCart={removeFromCart} />
+			<Cart
+				cartItems={cart}
+				updateQuantity={updateQuantity}
+				removeFromCart={removeFromCart}
+				clearCart={clearCart}
+			/>
 		</div>
 	);
 };
