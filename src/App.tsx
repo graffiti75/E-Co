@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import ProductCard from "./ProductCart";
+import ProductDetails from "./ProductDetails";
 import Cart from "./Cart";
 import { Product, CartItem } from "./types";
 // import "./App.css";
@@ -74,15 +76,26 @@ const App: React.FC = () => {
 			<h1 className="text-3xl font-bold text-center mb-8">
 				E-Commerce Store
 			</h1>
-			<div className="flex flex-wrap justify-center">
-				{products.map((product) => (
-					<ProductCard
-						key={product.id}
-						product={product}
-						addToCart={addToCart}
-					/>
-				))}
-			</div>
+			<Routes>
+				<Route
+					path="/"
+					element={
+						<div className="flex flex-wrap justify-center">
+							{products.map((product) => (
+								<ProductCard
+									key={product.id}
+									product={product}
+									addToCart={addToCart}
+								/>
+							))}
+						</div>
+					}
+				/>
+				<Route
+					path="/products/:id"
+					element={<ProductDetails addToCart={addToCart} />}
+				/>
+			</Routes>
 			<Cart
 				cartItems={cart}
 				updateQuantity={updateQuantity}
