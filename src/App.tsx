@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
+import { DarkModeContext } from "./DarkModeContext";
 import ProductCard from "./ProductCart";
 import ProductDetails from "./ProductDetails";
 import Cart from "./Cart";
@@ -9,6 +10,7 @@ import { products } from "./products";
 
 const App: React.FC = () => {
 	const [cart, setCart] = useState<CartItem[]>([]);
+	const { isDarkMode, toggleDarkMode } = useContext(DarkModeContext);
 
 	const addToCart = (product: Product) => {
 		const existingItem = cart.find(
@@ -48,42 +50,50 @@ const App: React.FC = () => {
 	};
 
 	return (
-		<div className="container mx-auto p-4">
-			<h1 className="text-3xl font-bold text-center mb-8">
-				E-Commerce Store
-			</h1>
-			<Routes>
-				<Route
-					path="/"
-					element={
-						<div className="flex flex-wrap justify-center">
-							{products.map((product) => (
-								<ProductCard
-									key={product.id}
-									product={product}
-									addToCart={addToCart}
-								/>
-							))}
-						</div>
-					}
+		<div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
+			<div className="container mx-auto p-4">
+				<div className="flex justify-between items-center mb-8">
+					<h1 className="text-3xl font-bold">E-Commerce Store</h1>
+					<button
+						className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
+						onClick={toggleDarkMode}
+					>
+						{isDarkMode ? "Light Mode" : "Dark Mode"}
+					</button>
+				</div>
+				<Routes>
+					<Route
+						path="/"
+						element={
+							<div className="flex flex-wrap justify-center">
+								{products.map((product) => (
+									<ProductCard
+										key={product.id}
+										product={product}
+										addToCart={addToCart}
+									/>
+								))}
+							</div>
+						}
+					/>
+					<Route
+						path="/products/:id"
+						element={<ProductDetails addToCart={addToCart} />}
+					/>
+					<Route
+						path="/checkout"
+						element={
+							<Checkout cartItems={cart} clearCart={clearCart} />
+						}
+					/>
+				</Routes>
+				<Cart
+					cartItems={cart}
+					updateQuantity={updateQuantity}
+					removeFromCart={removeFromCart}
+					clearCart={clearCart}
 				/>
-				<Route
-					path="/products/:id"
-					element={<ProductDetails addToCart={addToCart} />}
-				/>
-				<Route
-					path="/checkout"
-					element={
-						<Checkout cartItems={cart} clearCart={clearCart} />
-					}
-				/>
-			</Routes>
-			<Cart
-				cartItems={cart}
-				updateQuantity={updateQuantity}
-				removeFromCart={removeFromCart}
-				clearCart={clearCart}
-			/>
+			</div>
 		</div>
 	);
 };
