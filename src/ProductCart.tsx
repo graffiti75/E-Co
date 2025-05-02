@@ -14,7 +14,7 @@ const ProductCard: React.FC<ProductCartProps> = ({ product, addToCart }) => {
 				<img
 					src={product.imageUrl}
 					alt={product.name}
-					className="w-full h-40 object-cover"
+					className="w-full object-cover"
 				/>
 				<h3 className="text-lg font-bold mt-2 text-black dark:text-white">
 					{product.name}
