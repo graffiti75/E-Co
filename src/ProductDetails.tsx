@@ -1,31 +1,7 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { Product } from "./types";
-
-// Mock products (same as App.tsx, ideally move to a shared file later)
-const products: Product[] = [
-	{
-		id: 1,
-		name: "Laptop",
-		price: 999,
-		description: "High-performance laptop with 16GB RAM and 512GB SSD.",
-		imageUrl: "https://via.placeholder.com/300",
-	},
-	{
-		id: 2,
-		name: "Phone",
-		price: 499,
-		description: "Latest smartphone with 108MP camera and 5G support.",
-		imageUrl: "https://via.placeholder.com/300",
-	},
-	{
-		id: 3,
-		name: "Headphones",
-		price: 99,
-		description: "Noise-cancelling headphones with 20-hour battery life.",
-		imageUrl: "https://via.placeholder.com/300",
-	},
-];
+import { products } from "./products";
 
 interface ProductDetailsProps {
 	addToCart: (product: Product) => void;
@@ -60,7 +36,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ addToCart }) => {
 						${product.price}
 					</p>
 					<button
-						className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+						className="mt-4 bg-blue-500 text-white px-4 py-2 rounded- hover:bg-blue-700"
 						onClick={() => addToCart(product)}
 					>
 						Add to Cart

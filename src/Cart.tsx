@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { CartItem } from "./types";
 
 interface CartProps {
@@ -74,12 +75,20 @@ const Cart: React.FC<CartProps> = ({
 					<p className="text-xl font-semibold mt-4">
 						Total: ${total}
 					</p>
-					<button
-						className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-						onClick={clearCart}
-					>
-						Clear Cart
-					</button>
+					<div className="mt-4 flex space-x-4">
+						<button
+							className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+							onClick={clearCart}
+						>
+							Clear Cart
+						</button>
+						<Link
+							to="/checkout"
+							className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+						>
+							Checkout
+						</Link>
+					</div>
 				</>
 			)}
 		</div>

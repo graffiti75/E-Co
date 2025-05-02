@@ -2,12 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Product } from "./types";
 
-interface ProductCardProps {
+interface ProductCartProps {
 	product: Product;
 	addToCart: (product: Product) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, addToCart }) => {
+const ProductCard: React.FC<ProductCartProps> = ({ product, addToCart }) => {
 	return (
 		<div className="border rounded-lg p-4 m-2 w-64 shadow-lg">
 			<Link to={`/products/${product.id}`}>
@@ -21,7 +21,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, addToCart }) => {
 				<p className="text-xl font-semibold mt-1">${product.price}</p>
 			</Link>
 			<button
-				className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+				className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
 				onClick={() => addToCart(product)}
 			>
 				Add to Cart

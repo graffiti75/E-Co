@@ -3,33 +3,9 @@ import { Routes, Route } from "react-router-dom";
 import ProductCard from "./ProductCart";
 import ProductDetails from "./ProductDetails";
 import Cart from "./Cart";
+import Checkout from "./Checkout";
 import { Product, CartItem } from "./types";
-// import "./App.css";
-
-// Mock Products Data
-const products: Product[] = [
-	{
-		id: 1,
-		name: "Laptop",
-		price: 999,
-		description: "High-performance laptop",
-		imageUrl: "https://via.placeholder.com/150",
-	},
-	{
-		id: 2,
-		name: "Phone",
-		price: 499,
-		description: "Latest smartphone",
-		imageUrl: "https://via.placeholder.com/150",
-	},
-	{
-		id: 3,
-		name: "Headphones",
-		price: 99,
-		description: "Noise-cancelling headphones",
-		imageUrl: "https://via.placeholder.com/150",
-	},
-];
+import { products } from "./products";
 
 const App: React.FC = () => {
 	const [cart, setCart] = useState<CartItem[]>([]);
@@ -94,6 +70,12 @@ const App: React.FC = () => {
 				<Route
 					path="/products/:id"
 					element={<ProductDetails addToCart={addToCart} />}
+				/>
+				<Route
+					path="/checkout"
+					element={
+						<Checkout cartItems={cart} clearCart={clearCart} />
+					}
 				/>
 			</Routes>
 			<Cart
