@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { CartItem } from "./types";
+import ItemQuantityButton from "./ItemQuantityButton";
 
 interface CartProps {
 	cartItems: CartItem[];
@@ -41,32 +42,19 @@ const Cart: React.FC<CartProps> = ({
 								{item.product.price * item.quantity}
 							</span>
 							<div className="flex items-center">
-								<button
-									className="bg-gray-300 dark:bg-gray-700 text-black dark:text-white px-2 py-1 rounded hover:bg-gray-400 dark:hover:bg-gray-600"
-									onClick={() =>
-										updateQuantity(
-											item.product.id,
-											item.quantity - 1
-										)
-									}
-									disabled={item.quantity <= 1}
-								>
-									-
-								</button>
+								<ItemQuantityButton
+									item={item}
+									type={true}
+									updateQuantity={updateQuantity}
+								/>
 								<span className="mx-2 text-black dark:text-white">
 									{item.quantity}
 								</span>
-								<button
-									className="bg-gray-300 dark:bg-gray-700 text-black dark:text-white px-2 py-1 rounded hover:bg-gray-400 dark:hover:bg-gray-600"
-									onClick={() =>
-										updateQuantity(
-											item.product.id,
-											item.quantity + 1
-										)
-									}
-								>
-									+
-								</button>
+								<ItemQuantityButton
+									item={item}
+									type={false}
+									updateQuantity={updateQuantity}
+								/>
 								<button
 									className="ml-4 bg 'bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 dark:hover:bg-red-700"
 									onClick={() =>
