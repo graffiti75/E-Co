@@ -44,7 +44,7 @@ const Cart: React.FC<CartProps> = ({
 							<div className="flex items-center">
 								<ItemQuantityButton
 									item={item}
-									type={true}
+									decrease={true}
 									updateQuantity={updateQuantity}
 								/>
 								<span className="mx-2 text-black dark:text-white">
@@ -52,7 +52,7 @@ const Cart: React.FC<CartProps> = ({
 								</span>
 								<ItemQuantityButton
 									item={item}
-									type={false}
+									decrease={false}
 									updateQuantity={updateQuantity}
 								/>
 								<button
