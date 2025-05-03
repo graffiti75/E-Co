@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { CartItem } from "./types";
-import ItemQuantityButton from "./ItemQuantityButton";
+import CartItemUI from "./CartItemUI";
 
 interface CartProps {
 	cartItems: CartItem[];
@@ -33,38 +33,11 @@ const Cart: React.FC<CartProps> = ({
 			) : (
 				<>
 					{cartItems.map((item) => (
-						<div
-							key={item.product.id}
-							className="flex justify-between items-center mb-2"
-						>
-							<span className="text-black dark:text-white">
-								{item.product.name} (x{item.quantity}) - $
-								{item.product.price * item.quantity}
-							</span>
-							<div className="flex items-center">
-								<ItemQuantityButton
-									item={item}
-									decrease={true}
-									updateQuantity={updateQuantity}
-								/>
-								<span className="mx-2 text-black dark:text-white">
-									{item.quantity}
-								</span>
-								<ItemQuantityButton
-									item={item}
-									decrease={false}
-									updateQuantity={updateQuantity}
-								/>
-								<button
-									className="ml-4 bg 'bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 dark:hover:bg-red-700"
-									onClick={() =>
-										removeFromCart(item.product.id)
-									}
-								>
-									Remove
-								</button>
-							</div>
-						</div>
+						<CartItemUI
+							item={item}
+							updateQuantity={updateQuantity}
+							removeFromCart={removeFromCart}
+						/>
 					))}
 					<p className="text-xl font-semibold mt-4 text-black dark:text-white">
 						Total: ${total}
