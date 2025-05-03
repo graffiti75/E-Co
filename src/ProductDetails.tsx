@@ -1,7 +1,8 @@
 import React from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Product } from "./types";
 import { products } from "./products";
+import BackButton from "./BackButton";
 
 interface ProductDetailsProps {
 	addToCart: (product: Product) => void;
@@ -17,12 +18,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ addToCart }) => {
 
 	return (
 		<div className="container mx-auto p-4">
-			<Link
-				to="/"
-				className="text-blue-500 hover:underline mb-4 inline-block"
-			>
-				Back to Products
-			</Link>
+			<BackButton />
 			<div className="flex flex-col md:flex-row items-center">
 				<img
 					src={product.imageUrl}
