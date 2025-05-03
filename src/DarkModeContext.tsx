@@ -17,18 +17,25 @@ interface DarkModeProviderProps {
 export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({
 	children,
 }) => {
-	const [isDarkMode, setIsDarkMode] = useState(() => {
-		const saved = localStorage.getItem("darkMode");
-		return saved ? JSON.parse(saved) : false;
-	});
+	// const [isDarkMode, setIsDarkMode] = useState(() => {
+	// 	const saved = localStorage.getItem("darkMode");
+	// 	return saved ? JSON.parse(saved) : false;
+	// });
+	const [isDarkMode, setIsDarkMode] = useState(
+		window.matchMedia("(prefers-color-scheme: dark)").matches
+	);
+
+	// useEffect(() => {
+	// 	localStorage.setItem("darkMode", JSON.stringify(isDarkMode));
+	// 	if (isDarkMode) {
+	// 		document.documentElement.classList.add("dark");
+	// 	} else {
+	// 		document.documentElement.classList.remove("dark");
+	// 	}
+	// }, [isDarkMode]);
 
 	useEffect(() => {
-		localStorage.setItem("darkMode", JSON.stringify(isDarkMode));
-		if (isDarkMode) {
-			document.documentElement.classList.add("dark");
-		} else {
-			document.documentElement.classList.remove("dark");
-		}
+		document.documentElement.className = isDarkMode ? "dark" : "light";
 	}, [isDarkMode]);
 
 	const toggleDarkMode = () => {

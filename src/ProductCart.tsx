@@ -7,7 +7,7 @@ interface ProductCartProps {
 	addToCart: (product: Product) => void;
 }
 
-const ProductCard: React.FC<ProductCartProps> = ({ product, addToCart }) => {
+const ProductCart: React.FC<ProductCartProps> = ({ product, addToCart }) => {
 	return (
 		<div className="border rounded-lg p-4 m-2 w-64 shadow-lg bg-white dark:bg-gray-800">
 			<Link to={`/products/${product.id}`}>
@@ -27,7 +27,7 @@ const ProductCard: React.FC<ProductCartProps> = ({ product, addToCart }) => {
 				</p>
 			</Link>
 			<button
-				className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-700"
+				className="mt-2  text-white px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
 				onClick={() => addToCart(product)}
 			>
 				Add to Cart
@@ -36,4 +36,4 @@ const ProductCard: React.FC<ProductCartProps> = ({ product, addToCart }) => {
 	);
 };
 
-export default ProductCard;
+export default ProductCart;
