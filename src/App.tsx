@@ -3,6 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import ProductDetails from "./ProductDetails";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
+import Login from "./Login";
+import Register from "./Register";
 import { Product, CartItem } from "./types";
 import Header from "./Header";
 import ProductList from "./ProductList";
@@ -66,6 +68,8 @@ const App: React.FC = () => {
 							<Checkout cartItems={cart} clearCart={clearCart} />
 						}
 					/>
+					<Route path="/login" element={<Login />} />
+					<Route path="/register" element={<Register />} />
 				</Routes>
 				<Cart
 					cartItems={cart}

@@ -1,7 +1,8 @@
 import ReactDOM from "react-dom/client";
 import { HashRouter } from "react-router-dom";
-import App from "./App";
 import { DarkModeProvider } from "./DarkModeContext";
+import { AuthProvider } from "./AuthContext";
+import App from "./App";
 
 const root = ReactDOM.createRoot(
 	document.getElementById("root") as HTMLElement
@@ -9,7 +10,9 @@ const root = ReactDOM.createRoot(
 root.render(
 	<HashRouter>
 		<DarkModeProvider>
-			<App />
+			<AuthProvider>
+				<App />
+			</AuthProvider>
 		</DarkModeProvider>
 	</HashRouter>
 );
