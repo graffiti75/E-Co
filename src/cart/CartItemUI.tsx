@@ -1,6 +1,7 @@
 import React from "react";
-import { CartItem } from "./types";
+import { CartItem } from "../types/types";
 import ItemQuantityButton from "./ItemQuantityButton";
+import { formatPrice } from "../utils/formatPrice";
 
 interface CartItemUIProps {
 	item: CartItem;
@@ -19,8 +20,8 @@ const CartItemUI: React.FC<CartItemUIProps> = ({
 			className="flex justify-between items-center mb-2"
 		>
 			<span className="text-black dark:text-white">
-				{item.product.name} (x{item.quantity}) - $
-				{item.product.price * item.quantity}
+				{item.product.name} (x{item.quantity}) -
+				{formatPrice(item.product.price * item.quantity)}
 			</span>
 			<div className="flex items-center">
 				<ItemQuantityButton

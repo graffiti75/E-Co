@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Product } from "../types/types";
+import { formatPrice } from "../utils/formatPrice";
 
 interface ProductCartProps {
 	product: Product;
@@ -23,7 +24,7 @@ const ProductCart: React.FC<ProductCartProps> = ({ product, addToCart }) => {
 					{product.description}
 				</p>
 				<p className="text-xl font-semibold mt-1 text-black dark:text-white">
-					${product.price}
+					{formatPrice(product.price)}
 				</p>
 			</Link>
 			<button

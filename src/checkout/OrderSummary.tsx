@@ -1,4 +1,5 @@
-import { CartItem } from "./types";
+import { CartItem } from "../types/types";
+import { formatPrice } from "../utils/formatPrice";
 
 interface OrderSummaryProps {
 	cartItems: CartItem[];
@@ -23,11 +24,13 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ cartItems }) => {
 					<span>
 						{item.product.name} (x{item.quantity})
 					</span>
-					<span>${item.product.price * item.quantity}</span>
+					<span>
+						{formatPrice(item.product.price * item.quantity)}
+					</span>
 				</div>
 			))}
 			<p className="text-xl font-semibold mt-4 text-black dark:text-white dark:bg-gray-900">
-				Total: ${total}
+				Total: {formatPrice(total)}
 			</p>
 		</div>
 	);

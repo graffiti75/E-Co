@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Product } from "../types/types";
 import { products } from "./products";
 import BackButton from "../components/BackButton";
+import { formatPrice } from "../utils/formatPrice";
 
 interface ProductDetailsProps {
 	addToCart: (product: Product) => void;
@@ -29,7 +30,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ addToCart }) => {
 					<h2 className="text-3xl font-bold">{product.name}</h2>
 					<p className="text-gray-600 mt-2">{product.description}</p>
 					<p className="text-2xl font-semibold mt-4">
-						${product.price}
+						{formatPrice(product.price)}
 					</p>
 					<button
 						className="mt-4 bg-blue-500 text-white px-4 py-2 rounded- hover:bg-blue-700"

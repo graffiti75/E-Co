@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { CartItem } from "../types/types";
 import CartItemUI from "./CartItemUI";
+import { formatPrice } from "../utils/formatPrice";
 
 interface CartProps {
 	cartItems: CartItem[];
@@ -40,7 +41,7 @@ const Cart: React.FC<CartProps> = ({
 						/>
 					))}
 					<p className="text-xl font-semibold mt-4 text-black dark:text-white">
-						Total: ${total}
+						Total: {formatPrice(total)}
 					</p>
 					<div className="mt-4 flex space-x-4">
 						<button
