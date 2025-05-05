@@ -1,11 +1,17 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { DarkModeContext } from "./DarkModeContext";
 import { AuthContext } from "./AuthContext";
 
 const Header: React.FC = () => {
 	const { isDarkMode, toggleDarkMode } = useContext(DarkModeContext);
 	const { user, logout } = useContext(AuthContext);
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		logout();
+		navigate("/auth");
+	};
 
 	return (
 		<div className="flex justify-between items-center mb-8">
@@ -18,19 +24,12 @@ const Header: React.FC = () => {
 						</span>
 						<button
 							className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
-							onClick={logout}
+							onClick={handleLogout}
 						>
 							Logout
 						</button>
 					</>
-				) : (
-					<Link
-						to="/login"
-						className="text-blue-500 dark:text-blue-400 hover:underline"
-					>
-						Login
-					</Link>
-				)}
+				) : null}
 				<button
 					className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600"
 					onClick={toggleDarkMode}

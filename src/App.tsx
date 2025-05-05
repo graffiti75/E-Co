@@ -1,16 +1,17 @@
-import React, { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import ProductList from "./ProductList";
 import ProductDetails from "./ProductDetails";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
-import Login from "./Login";
-import Register from "./Register";
-import { Product, CartItem } from "./types";
+import AuthScreen from "./AuthScreen";
 import Header from "./Header";
-import ProductList from "./ProductList";
+import { Product, CartItem } from "./types";
+import { AuthContext } from "./AuthContext";
 
 const App: React.FC = () => {
 	const [cart, setCart] = useState<CartItem[]>([]);
+	const { user } = useContext(AuthContext);
 
 	const addToCart = (product: Product) => {
 		const existingItem = cart.find(
@@ -54,29 +55,49 @@ const App: React.FC = () => {
 			<div className="container mx-auto p-4">
 				<Header />
 				<Routes>
+					<Route path="/auth" element={<AuthScreen />} />
 					<Route
 						path="/"
-						element={<ProductList addToCart={addToCart} />}
+						element={
+							user ? (
+								<ProductList addToCart={addToCart} />
+							) : (
+								<Navigate to="/auth" />
+							)
+						}
 					/>
 					<Route
 						path="/products/:id"
-						element={<ProductDetails addToCart={addToCart} />}
+						element={
+							user ? (
+								<ProductDetails addToCart={addToCart} />
+							) : (
+								<Navigate to="/auth" />
+							)
+						}
 					/>
 					<Route
 						path="/checkout"
 						element={
-							<Checkout cartItems={cart} clearCart={clearCart} />
+							user ? (
+								<Checkout
+									cartItems={cart}
+									clearCart={clearCart}
+								/>
+							) : (
+								<Navigate to="/auth" />
+							)
 						}
 					/>
-					<Route path="/login" element={<Login />} />
-					<Route path="/register" element={<Register />} />
 				</Routes>
-				<Cart
-					cartItems={cart}
-					updateQuantity={updateQuantity}
-					removeFromCart={removeFromCart}
-					clearCart={clearCart}
-				/>
+				{user && (
+					<Cart
+						cartItems={cart}
+						updateQuantity={updateQuantity}
+						removeFromCart={removeFromCart}
+						clearCart={clearCart}
+					/>
+				)}
 			</div>
 		</div>
 	);

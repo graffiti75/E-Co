@@ -9,7 +9,7 @@
 		"lint": "eslint .",
 		"preview": "vite preview",
 		"predeploy": "npm run build",
-		"deploy": "gh-pages -d dist -m 'Dark Mode automatically set based on user system settings'"
+		"deploy": "gh-pages -d dist -m '< add commit message >'"
 	},
 	"dependencies": {
 		"react": "^19.0.0",
