@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { CartItem } from "./types";
+import { CartItem } from "../types/types";
 import CartItemUI from "./CartItemUI";
 
 interface CartProps {

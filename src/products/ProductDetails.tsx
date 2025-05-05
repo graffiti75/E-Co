@@ -1,8 +1,8 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Product } from "./types";
+import { Product } from "../types/types";
 import { products } from "./products";
-import BackButton from "./BackButton";
+import BackButton from "../components/BackButton";
 
 interface ProductDetailsProps {
 	addToCart: (product: Product) => void;

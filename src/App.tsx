@@ -1,13 +1,13 @@
 import React, { useState, useContext } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import ProductList from "./ProductList";
-import ProductDetails from "./ProductDetails";
-import Cart from "./Cart";
-import Checkout from "./Checkout";
-import AuthScreen from "./AuthScreen";
-import Header from "./Header";
-import { Product, CartItem } from "./types";
-import { AuthContext } from "./AuthContext";
+import ProductList from "./products/ProductList";
+import ProductDetails from "./products/ProductDetails";
+import Cart from "./cart/Cart";
+import Checkout from "./checkout/Checkout";
+import AuthScreen from "./auth/AuthScreen";
+import Header from "./components/Header";
+import { Product, CartItem } from "./types/types";
+import { AuthContext } from "./auth/AuthContext";
 
 const App: React.FC = () => {
 	const [cart, setCart] = useState<CartItem[]>([]);

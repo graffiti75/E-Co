@@ -1,5 +1,5 @@
 import ProductCard from "./ProductCart";
-import { Product } from "./types";
+import { Product } from "../types/types";
 import { products } from "./products";
 
 interface ProductListProps {

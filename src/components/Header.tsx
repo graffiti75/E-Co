@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { DarkModeContext } from "./DarkModeContext";
-import { AuthContext } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
+import { DarkModeContext } from "../context/DarkModeContext";
+import { AuthContext } from "../auth/AuthContext";
 
 const Header: React.FC = () => {
 	const { isDarkMode, toggleDarkMode } = useContext(DarkModeContext);

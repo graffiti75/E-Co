@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import Login from "./Login";
 import Register from "./Register";
 
@@ -32,12 +31,6 @@ const AuthScreen: React.FC = () => {
 					</button>
 				</div>
 				{activeTab === "login" ? <Login /> : <Register />}
-				<Link
-					to="/"
-					className="text-blue-500 dark:text-blue-400 hover:underline mt-4 inline-block"
-				>
-					Continue as Guest
-				</Link>
 			</div>
 		</div>
 	);

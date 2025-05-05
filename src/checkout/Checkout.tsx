@@ -1,7 +1,7 @@
-import { CartItem } from "./types";
+import { CartItem } from "../types/types";
 import OrderSummary from "./OrderSummary";
 import ShippingForm from "./ShippingForm";
-import BackButton from "./BackButton";
+import BackButton from "../components/BackButton";
 
 interface CheckoutProps {
 	cartItems: CartItem[];
