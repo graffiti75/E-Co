@@ -1,0 +1,20 @@
+{
+	"files": [],
+	"references": [
+		{ "path": "./tsconfig.app.json" },
+		{ "path": "./tsconfig.node.json" }
+	],
+	"compilerOptions": {
+		"baseUrl": "src",
+		"paths": {
+			"auth/*": ["auth/*"],
+			"cart/*": ["cart/*"],
+			"checkout/*": ["checkout/*"],
+			"components/*": ["components/*"],
+			"context/*": ["context/*"],
+			"products/*": ["products/*"],
+			"types/*": ["types/*"],
+			"utils/*": ["utils/*"]
+		}
+	}
+}

@@ -1,40 +1,8 @@
 {
-  "hash": "507f7d35",
+  "hash": "42381e45",
   "configHash": "74d71a85",
-  "lockfileHash": "6b7bfb0a",
-  "browserHash": "dca4cfa4",
-  "optimized": {
-    "react/jsx-dev-runtime": {
-      "src": "../../node_modules/react/jsx-dev-runtime.js",
-      "file": "react_jsx-dev-runtime.js",
-      "fileHash": "ec95189f",
-      "needsInterop": true
-    },
-    "react-dom/client": {
-      "src": "../../node_modules/react-dom/client.js",
-      "file": "react-dom_client.js",
-      "fileHash": "5b7809d6",
-      "needsInterop": true
-    },
-    "react-router-dom": {
-      "src": "../../node_modules/react-router-dom/dist/index.mjs",
-      "file": "react-router-dom.js",
-      "fileHash": "381fc424",
-      "needsInterop": false
-    },
-    "react": {
-      "src": "../../node_modules/react/index.js",
-      "file": "react.js",
-      "fileHash": "e26cf7c0",
-      "needsInterop": true
-    }
-  },
-  "chunks": {
-    "chunk-WZVU6G5Y": {
-      "file": "chunk-WZVU6G5Y.js"
-    },
-    "chunk-Q462PRL3": {
-      "file": "chunk-Q462PRL3.js"
-    }
-  }
+  "lockfileHash": "e3b0c442",
+  "browserHash": "476501cb",
+  "optimized": {},
+  "chunks": {}
 }
