@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 export interface User {
 	username: string;
@@ -22,8 +22,16 @@ export const AuthContext = createContext<{
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
-	const [user, setUser] = useState<User | null>(null);
+	// const [user, setUser] = useState<User | null>(null);
+	const [user, setUser] = useState<User | null>(() => {
+		const storedUser = localStorage.getItem("user");
+		return storedUser ? JSON.parse(storedUser) : null;
+	});
 	const [error, setError] = useState<string | null>(null);
+
+	useEffect(() => {
+		localStorage.setItem("user", JSON.stringify(user));
+	}, [user]);
 
 	const login = (email: string, password: string) => {
 		if (!email || !password) {
@@ -35,7 +43,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 			return false;
 		}
 		setError(null);
-		setUser({ username: "User", email });
+		// setUser({ username: "User", email });
+		const newUser = { username: "User", email };
+		setUser(newUser);
 		return true;
 	};
 
@@ -49,13 +59,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 			return false;
 		}
 		setError(null);
-		setUser({ username, email });
+		// setUser({ username, email });
+		const newUser = { username, email };
+		setUser(newUser);
 		return true;
 	};
 
 	const logout = () => {
 		setUser(null);
 		setError(null);
+		localStorage.removeItem("user");
 	};
 
 	return (
