@@ -1,5 +1,7 @@
+import axios from "axios";
 import { Product } from "../types/types";
 
+/*
 export const products: Product[] = [
 	{
 		id: 1,
@@ -26,3 +28,9 @@ export const products: Product[] = [
 			"https://plus.unsplash.com/premium_photo-1679513691474-73102089c117",
 	},
 ];
+*/
+
+export const fetchProducts = async (): Promise<Product[]> => {
+	const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/products`);
+	return res.data;
+};

@@ -1,9 +1,9 @@
 import React, { createContext, useState, useEffect } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { User, CartItem, Product } from "../types/types";
 
-export interface User {
-	username: string;
-	email: string;
+interface ErrorResponse {
+	error?: string;
 }
 
 export const AuthContext = createContext<{
@@ -16,18 +16,27 @@ export const AuthContext = createContext<{
 	) => Promise<boolean>;
 	logout: () => void;
 	error: string | null;
+	addToCart: (product: Product) => Promise<boolean>;
+	fetchCart: () => Promise<CartItem[]>;
+	updateCartItem: (id: string, quantity: number) => Promise<boolean>;
+	removeFromCart: (id: string) => Promise<boolean>;
+	clearCart: () => void;
 }>({
 	user: null,
 	login: async () => false,
 	register: async () => false,
 	logout: () => {},
 	error: null,
+	addToCart: async () => false,
+	fetchCart: async () => [],
+	updateCartItem: async () => false,
+	removeFromCart: async () => false,
+	clearCart: () => {},
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
-	// const [user, setUser] = useState<User | null>(null);
 	const [user, setUser] = useState<User | null>(() => {
 		const storedUser = localStorage.getItem("user");
 		return storedUser ? JSON.parse(storedUser) : null;
@@ -42,22 +51,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 		);
 	}, [user]);
 
-	// const login = (email: string, password: string) => {
-	// 	if (!email || !password) {
-	// 		setError("Email and password are required");
-	// 		return false;
-	// 	}
-	// 	if (password.length < 6) {
-	// 		setError("Password must be at least 6 characters");
-	// 		return false;
-	// 	}
-	// 	setError(null);
-	// 	// setUser({ username: "User", email });
-	// 	const newUser = { username: "User", email };
-	// 	setUser(newUser);
-	// 	return true;
-	// };
-
 	const login = async (email: string, password: string) => {
 		try {
 			const res = await axios.post(
@@ -69,26 +62,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 			setError(null);
 			return true;
 		} catch (err) {
-			setError(err.response?.data?.error || "Login failed");
+			const axiosError = err as AxiosError<ErrorResponse>;
+			setError(axiosError.response?.data?.error || "Login failed");
 			return false;
 		}
 	};
-
-	// const register = (username: string, email: string, password: string) => {
-	// 	if (!username || !email || !password) {
-	// 		setError("All fields are required");
-	// 		return false;
-	// 	}
-	// 	if (password.length < 6) {
-	// 		setError("Password must be at least 6 characters");
-	// 		return false;
-	// 	}
-	// 	setError(null);
-	// 	// setUser({ username, email });
-	// 	const newUser = { username, email };
-	// 	setUser(newUser);
-	// 	return true;
-	// };
 
 	const register = async (
 		username: string,
@@ -105,9 +83,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 			setError(null);
 			return true;
 		} catch (err) {
-			setError(err.response?.data?.error || "Registration failed");
-			console.log(`Registration error: ${err.response?.data?.error}`);
-			console.log("Hello");
+			const axiosError = err as AxiosError<ErrorResponse>;
+			const errorMessage =
+				axiosError.response?.data?.error || "Registration failed";
+			setError(errorMessage);
+			console.log(`Registration error: ${errorMessage}`);
 			return false;
 		}
 	};
@@ -119,8 +99,115 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 		localStorage.removeItem("token");
 	};
 
+	const addToCart = async (product: Product) => {
+		try {
+			const token = localStorage.getItem("token");
+			await axios.post(
+				`${import.meta.env.VITE_API_URL}/api/cart`,
+				{ productId: product._id, quantity: 1 },
+				{ headers: { Authorization: `Bearer ${token}` } }
+			);
+			setError(null);
+			return true;
+		} catch (err) {
+			const axiosError = err as AxiosError<ErrorResponse>;
+			setError(
+				axiosError.response?.data?.error || "Failed to add to cart"
+			);
+			return false;
+		}
+	};
+
+	const fetchCart = async () => {
+		try {
+			const token = localStorage.getItem("token");
+			const res = await axios.get(
+				`${import.meta.env.VITE_API_URL}/api/cart`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
+			return res.data;
+		} catch (err) {
+			const axiosError = err as AxiosError<ErrorResponse>;
+			setError(
+				axiosError.response?.data?.error || "Failed to fetch cart"
+			);
+			return [];
+		}
+	};
+
+	const updateCartItem = async (id: string, quantity: number) => {
+		try {
+			const token = localStorage.getItem("token");
+			await axios.put(
+				`${import.meta.env.VITE_API_URL}/api/cart/${id}`,
+				{ quantity },
+				{ headers: { Authorization: `Bearer ${token}` } }
+			);
+			setError(null);
+			return true;
+		} catch (err) {
+			const axiosError = err as AxiosError<ErrorResponse>;
+			setError(
+				axiosError.response?.data?.error || "Failed to update cart"
+			);
+			return false;
+		}
+	};
+
+	const removeFromCart = async (id: string) => {
+		try {
+			const token = localStorage.getItem("token");
+			await axios.delete(
+				`${import.meta.env.VITE_API_URL}/api/cart/${id}`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
+			setError(null);
+			return true;
+		} catch (err) {
+			const axiosError = err as AxiosError<ErrorResponse>;
+			setError(
+				axiosError.response?.data?.error || "Failed to remove from cart"
+			);
+			return false;
+		}
+	};
+
+	const clearCart = async () => {
+		try {
+			const token = localStorage.getItem("token");
+			await axios.delete(`${import.meta.env.VITE_API_URL}/api/cart`, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
+			setError(null);
+			return true;
+		} catch (err) {
+			const axiosError = err as AxiosError<ErrorResponse>;
+			setError(
+				axiosError.response?.data?.error || "Failed to clear cart"
+			);
+			return false;
+		}
+	};
+
 	return (
-		<AuthContext.Provider value={{ user, login, register, logout, error }}>
+		<AuthContext.Provider
+			value={{
+				user,
+				login,
+				register,
+				logout,
+				error,
+				addToCart,
+				fetchCart,
+				updateCartItem,
+				removeFromCart,
+				clearCart,
+			}}
+		>
 			{children}
 		</AuthContext.Provider>
 	);

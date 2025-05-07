@@ -1,26 +1,35 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { CartItem } from "../types/types";
 import CartItemUI from "./CartItemUI";
 import { formatPrice } from "../utils/formatPrice";
 
 interface CartProps {
-	cartItems: CartItem[];
-	updateQuantity: (id: number, quantity: number) => void;
-	removeFromCart: (id: number) => void;
+	fetchCart: () => Promise<CartItem[]>;
+	updateCartItem: (id: string, quantity: number) => Promise<boolean>;
+	removeFromCart: (id: string) => Promise<boolean>;
 	clearCart: () => void;
 }
 
 const Cart: React.FC<CartProps> = ({
-	cartItems,
-	updateQuantity,
+	fetchCart,
+	updateCartItem,
 	removeFromCart,
 	clearCart,
 }) => {
+	const [cartItems, setCartItems] = useState<CartItem[]>([]);
 	const total = cartItems.reduce(
-		(sum, item) => sum + item.product.price * item.quantity,
+		(sum, item) => sum + item.productId.price * item.quantity,
 		0
 	);
+
+	useEffect(() => {
+		fetchCart().then(setCartItems).catch(console.error);
+	}, [fetchCart]);
+
+	const refreshCart = () => {
+		fetchCart().then(setCartItems).catch(console.error);
+	};
 
 	return (
 		<div className="mt-8 p-4 border rounded-lg shadow-lg bg-white dark:bg-gray-800">
@@ -35,9 +44,11 @@ const Cart: React.FC<CartProps> = ({
 				<>
 					{cartItems.map((item) => (
 						<CartItemUI
+							key={item._id}
 							item={item}
-							updateQuantity={updateQuantity}
+							updateQuantity={updateCartItem}
 							removeFromCart={removeFromCart}
+							refreshCart={refreshCart}
 						/>
 					))}
 					<p className="text-xl font-semibold mt-4 text-black dark:text-white">

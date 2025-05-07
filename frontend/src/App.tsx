@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProductList from "./products/ProductList";
 import ProductDetails from "./products/ProductDetails";
@@ -6,49 +6,17 @@ import Cart from "./cart/Cart";
 import Checkout from "./checkout/Checkout";
 import AuthScreen from "./auth/AuthScreen";
 import Header from "./components/Header";
-import { Product, CartItem } from "./types/types";
 import { AuthContext } from "./auth/AuthContext";
 
 const App: React.FC = () => {
-	const [cart, setCart] = useState<CartItem[]>([]);
-	const { user } = useContext(AuthContext);
-
-	const addToCart = (product: Product) => {
-		const existingItem = cart.find(
-			(item) => item.product.id === product.id
-		);
-		if (existingItem) {
-			setCart(
-				cart.map((item) =>
-					item.product.id === product.id
-						? { ...item, quantity: item.quantity + 1 }
-						: item
-				)
-			);
-		} else {
-			setCart([...cart, { product, quantity: 1 }]);
-		}
-	};
-
-	const updateQuantity = (id: number, quantity: number) => {
-		if (quantity <= 0) {
-			setCart(cart.filter((item) => item.product.id !== id));
-		} else {
-			setCart(
-				cart.map((item) =>
-					item.product.id === id ? { ...item, quantity } : item
-				)
-			);
-		}
-	};
-
-	const removeFromCart = (id: number) => {
-		setCart(cart.filter((item) => item.product.id !== id));
-	};
-
-	const clearCart = () => {
-		setCart([]);
-	};
+	const {
+		user,
+		addToCart,
+		fetchCart,
+		updateCartItem,
+		removeFromCart,
+		clearCart,
+	} = useContext(AuthContext);
 
 	return (
 		<div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
@@ -81,7 +49,7 @@ const App: React.FC = () => {
 						element={
 							user ? (
 								<Checkout
-									cartItems={cart}
+									cartItems={[]}
 									clearCart={clearCart}
 								/>
 							) : (
@@ -92,8 +60,8 @@ const App: React.FC = () => {
 				</Routes>
 				{user && (
 					<Cart
-						cartItems={cart}
-						updateQuantity={updateQuantity}
+						fetchCart={fetchCart}
+						updateCartItem={updateCartItem}
 						removeFromCart={removeFromCart}
 						clearCart={clearCart}
 					/>

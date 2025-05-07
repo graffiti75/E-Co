@@ -7,7 +7,7 @@ interface OrderSummaryProps {
 
 const OrderSummary: React.FC<OrderSummaryProps> = ({ cartItems }) => {
 	const total = cartItems.reduce(
-		(sum, item) => sum + item.product.price * item.quantity,
+		(sum, item) => sum + item.productId.price * item.quantity,
 		0
 	);
 
@@ -18,14 +18,14 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ cartItems }) => {
 			</h3>
 			{cartItems.map((item) => (
 				<div
-					key={item.product.id}
+					key={item._id}
 					className="flex justify-between mb-2 text-black dark:text-white"
 				>
 					<span>
-						{item.product.name} (x{item.quantity})
+						{item.productId.name} (x{item.quantity})
 					</span>
 					<span>
-						{formatPrice(item.product.price * item.quantity)}
+						{formatPrice(item.productId.price * item.quantity)}
 					</span>
 				</div>
 			))}

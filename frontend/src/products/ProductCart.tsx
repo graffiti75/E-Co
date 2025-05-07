@@ -11,7 +11,7 @@ interface ProductCartProps {
 const ProductCart: React.FC<ProductCartProps> = ({ product, addToCart }) => {
 	return (
 		<div className="border rounded-lg p-4 m-2 w-64 shadow-lg bg-white dark:bg-gray-800">
-			<Link to={`/products/${product.id}`}>
+			<Link to={`/products/${product._id}`}>
 				<img
 					src={product.imageUrl}
 					alt={product.name}

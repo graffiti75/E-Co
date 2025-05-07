@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Product } from "../types/types";
-import { products } from "./products";
+import { fetchProducts } from "./products";
 import BackButton from "../components/BackButton";
 import { formatPrice } from "../utils/formatPrice";
 
@@ -11,7 +11,16 @@ interface ProductDetailsProps {
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ addToCart }) => {
 	const { id } = useParams<{ id: string }>();
-	const product = products.find((p) => p.id === parseInt(id || "0"));
+	const [product, setProduct] = useState<Product | null>(null);
+
+	useEffect(() => {
+		fetchProducts()
+			.then((products) => {
+				const found = products.find((p) => p._id === id);
+				setProduct(found || null);
+			})
+			.catch(console.error);
+	}, [id]);
 
 	if (!product) {
 		return <div className="text-center p-4">Product not found</div>;

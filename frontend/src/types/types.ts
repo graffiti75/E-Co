@@ -1,5 +1,10 @@
+export interface User {
+	username: string;
+	email: string;
+}
+
 export interface Product {
-	id: number;
+	_id: string;
 	name: string;
 	price: number;
 	description: string;
@@ -7,6 +12,8 @@ export interface Product {
 }
 
 export interface CartItem {
-	product: Product;
+	_id: string;
+	userId: string;
+	productId: Product;
 	quantity: number;
 }
