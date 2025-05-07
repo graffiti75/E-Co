@@ -9,8 +9,8 @@ const Register: React.FC = () => {
 	const { register, error } = useContext(AuthContext);
 	const navigate = useNavigate();
 
-	const handleSubmit = () => {
-		if (register(username, email, password)) {
+	const handleSubmit = async () => {
+		if (await register(username, email, password)) {
 			navigate("/");
 		}
 	};

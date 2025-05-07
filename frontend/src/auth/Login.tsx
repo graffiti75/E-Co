@@ -8,8 +8,8 @@ const Login: React.FC = () => {
 	const { login, error } = useContext(AuthContext);
 	const navigate = useNavigate();
 
-	const handleSubmit = () => {
-		if (login(email, password)) {
+	const handleSubmit = async () => {
+		if (await login(email, password)) {
 			navigate("/");
 		}
 	};
