@@ -18,7 +18,8 @@ const Cart: React.FC<CartProps> = ({
 	clearCart,
 }) => {
 	const [cartItems, setCartItems] = useState<CartItem[]>([]);
-	const total = cartItems.reduce(
+	const validCartItems = cartItems.filter((item) => item.productId !== null);
+	const total = validCartItems.reduce(
 		(sum, item) => sum + item.productId.price * item.quantity,
 		0
 	);
@@ -36,13 +37,13 @@ const Cart: React.FC<CartProps> = ({
 			<h2 className="text-2xl font-bold mb-4 text-black dark:text-white">
 				Shopping Cart
 			</h2>
-			{cartItems.length === 0 ? (
+			{validCartItems.length === 0 ? (
 				<p className="text-black dark:text-white">
 					Your cart is empty.
 				</p>
 			) : (
 				<>
-					{cartItems.map((item) => (
+					{validCartItems.map((item) => (
 						<CartItemUI
 							key={item._id}
 							item={item}

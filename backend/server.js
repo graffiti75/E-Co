@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const log = require("./utils/logger");
+const loge = require("./utils/logger");
 
 dotenv.config();
 const app = express();
@@ -12,12 +14,12 @@ app.use(express.json());
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI).then(async () => {
-	console.log("MongoDB connected");
+	log("server.js -> MongoDB connected");
 	// Seed products
 	const Product = require("./models/Product");
 	const existingProducts = await Product.countDocuments();
 	if (existingProducts === 0) {
-		console.log("Seeding initial products...");
+		log("server.js -> Seeding initial products...");
 		const initialProducts = [
 			{
 				name: "Laptop",
@@ -42,7 +44,7 @@ mongoose.connect(process.env.MONGO_URI).then(async () => {
 			},
 		];
 		await Product.insertMany(initialProducts);
-		console.log("Initial products seeded");
+		log("server.js -> Initial products seeded");
 	}
 });
 
@@ -53,6 +55,7 @@ const CartItem = require("./models/CartItem");
 
 // Middleware to verify JWT
 const authMiddleware = (req, res, next) => {
+	log("server.js -> authMiddleware");
 	const token = req.header("Authorization")?.replace("Bearer ", "");
 	if (!token) return res.status(401).json({ error: "No token provided" });
 	try {
@@ -64,22 +67,29 @@ const authMiddleware = (req, res, next) => {
 	}
 };
 
-// Simple test
+// Simple Test Route
 app.get("/test", (req, res) => {
-	console.log("Test endpoint hit");
+	log("Test endpoint hit");
 	res.send("Test OK");
 });
 
 // Register Route
 app.post("/api/register", async (req, res) => {
-	console.log("Register request:", req.body);
+	log("server.js -> post(/api/register) -> Register request:", req.body);
 	const { username, email, password } = req.body;
+	log(
+		`server.js -> post(/api/register) -> username: ${username}, email: ${email}, password: ${password}`
+	);
 	if (!username || !email || !password) {
-		console.log("Validation error: Missing fields");
+		log(
+			"server.js -> post(/api/register) -> Validation error: Missing fields"
+		);
 		return res.status(400).json({ error: "All fields are required" });
 	}
 	if (password.length < 6) {
-		console.log("Validation error: Password too short");
+		log(
+			"server.js -> post(/api/register) -> Validation error: Password too short"
+		);
 		return res
 			.status(400)
 			.json({ error: "Password must be at least 6 characters" });
@@ -87,7 +97,10 @@ app.post("/api/register", async (req, res) => {
 	try {
 		const existingUser = await User.findOne({ email });
 		if (existingUser) {
-			console.log("Error: Email already exists", email);
+			log(
+				"server.js -> post(/api/register) -> Error: Email already exists",
+				email
+			);
 			return res.status(400).json({ error: "Email already exists" });
 		}
 		const hashedPassword = await bcrypt.hash(password, 10);
@@ -98,17 +111,22 @@ app.post("/api/register", async (req, res) => {
 		});
 		res.status(201).json({ token, user: { username, email } });
 	} catch (err) {
-		console.error("Register error:", err);
+		loge("server.js -> post(/api/register) -> Register error:", err);
 		res.status(500).json({ error: "Server error" });
 	}
 });
 
 // Login Route
 app.post("/api/login", async (req, res) => {
-	console.log("Login request:", req.body);
+	log("server.js -> post(/api/login) -> Login request:", req.body);
 	const { email, password } = req.body;
+	log(
+		`server.js -> post(/api/login) -> email: ${email}, password: ${password}`
+	);
 	if (!email || !password) {
-		console.log("Validation error: Missing fields");
+		log(
+			"server.js -> post(/api/login) -> Validation error: Missing fields"
+		);
 		return res
 			.status(400)
 			.json({ error: "Email and password are required" });
@@ -116,40 +134,53 @@ app.post("/api/login", async (req, res) => {
 	try {
 		const user = await User.findOne({ email });
 		if (!user) {
-			console.log("Error: User not found", email);
+			log(
+				"server.js -> post(/api/login) -> Error: User not found",
+				email
+			);
 			return res.status(400).json({ error: "Invalid credentials" });
 		}
 		const isMatch = await bcrypt.compare(password, user.password);
 		if (!isMatch) {
-			console.log("Error: Password mismatch", email);
+			log(
+				"server.js -> post(/api/login) -> Error: Password mismatch",
+				email
+			);
 			return res.status(400).json({ error: "Invalid credentials" });
 		}
 		const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
 			expiresIn: "1h",
 		});
+		log(`server.js -> post(/api/login) -> token: ${token}`);
 		res.json({
 			token,
 			user: { username: user.username, email: user.email },
 		});
 	} catch (err) {
-		console.error("Login error:", err.message);
+		loge("server.js -> post(/api/login) -> Login error:", err.message);
 		res.status(500).json({ error: "Server error" });
 	}
 });
 
 // Product Routes
 app.get("/api/products", async (req, res) => {
+	log("server.js -> get(/api/products)");
 	try {
 		const products = await Product.find();
+		log(`server.js -> get(/api/products) -> products: ${products}`);
 		res.json(products);
 	} catch (err) {
-		console.error("Products error:", err.message);
+		loge("server.js -> get(/api/products) -> Products error:", err.message);
 		res.status(500).json({ error: "Server error" });
 	}
 });
 
 app.post("/api/products", async (req, res) => {
+	log("server.js -> post(/api/products)");
 	const { name, price, description, imageUrl } = req.body;
+	log(
+		`server.js -> post(/api/products) -> name: ${name}, price: ${price}, description: ${description}, imageUrl: ${imageUrl}`
+	);
 	if (!name || !price || !description || !imageUrl) {
 		return res.status(400).json({ error: "All fields are required" });
 	}
@@ -158,26 +189,35 @@ app.post("/api/products", async (req, res) => {
 		await product.save();
 		res.status(201).json(product);
 	} catch (err) {
-		console.error("Product create error:", err.message);
+		loge(
+			"server.js -> post(/api/products) -> Product create error:",
+			err.message
+		);
 		res.status(500).json({ error: "Server error" });
 	}
 });
 
 // Cart Routes
 app.get("/api/cart", authMiddleware, async (req, res) => {
+	log("server.js -> get(/api/cart)");
 	try {
 		const cartItems = await CartItem.find({ userId: req.userId }).populate(
 			"productId"
 		);
-		res.json(cartItems);
+		const validCart = cartItems.filter((item) => item.productId !== null);
+		res.json(validCart);
 	} catch (err) {
-		console.error("Cart fetch error:", err.message);
+		loge("server.js -> get(/api/cart) -> Cart fetch error:", err.message);
 		res.status(500).json({ error: "Server error" });
 	}
 });
 
 app.post("/api/cart", authMiddleware, async (req, res) => {
+	log("server.js -> post(/api/cart)");
 	const { productId, quantity } = req.body;
+	log(
+		`server.js -> post(/api/cart) -> productId: ${productId}, quantity: ${quantity}`
+	);
 	if (!productId || !quantity) {
 		return res
 			.status(400)
@@ -188,6 +228,7 @@ app.post("/api/cart", authMiddleware, async (req, res) => {
 			userId: req.userId,
 			productId,
 		});
+		log(`server.js -> post(/api/cart) -> existingItem: ${existingItem}`);
 		if (existingItem) {
 			existingItem.quantity += quantity;
 			await existingItem.save();
@@ -202,12 +243,13 @@ app.post("/api/cart", authMiddleware, async (req, res) => {
 			res.status(201).json(cartItem);
 		}
 	} catch (err) {
-		console.error("Cart add error:", err.message);
+		loge("server.js -> post(/api/cart) -> Cart add error:", err.message);
 		res.status(500).json({ error: "Server error" });
 	}
 });
 
 app.delete("/api/cart/:id", authMiddleware, async (req, res) => {
+	log(`server.js -> delete(/api/cart/${id})`);
 	try {
 		await CartItem.findOneAndDelete({
 			_id: req.params.id,
@@ -215,13 +257,18 @@ app.delete("/api/cart/:id", authMiddleware, async (req, res) => {
 		});
 		res.json({ message: "Item removed" });
 	} catch (err) {
-		console.error("Cart delete error:", err.message);
+		loge(
+			"server.js -> delete(/api/cart/${id}) -> Cart delete error:",
+			err.message
+		);
 		res.status(500).json({ error: "Server error" });
 	}
 });
 
 app.put("/api/cart/:id", authMiddleware, async (req, res) => {
+	log(`server.js -> put(/api/cart/${id})`);
 	const { quantity } = req.body;
+	log(`server.js -> put(/api/cart/${id}) -> quantity: ${quantity}`);
 	if (!quantity || quantity < 1) {
 		return res.status(400).json({ error: "Valid quantity is required" });
 	}
@@ -231,15 +278,19 @@ app.put("/api/cart/:id", authMiddleware, async (req, res) => {
 			{ quantity },
 			{ new: true }
 		);
+		log(`server.js -> put(/api/cart/${id}) -> cartItem: ${cartItem}`);
 		if (!cartItem) {
 			return res.status(404).json({ error: "Cart item not found" });
 		}
 		res.json(cartItem);
 	} catch (err) {
-		console.error("Cart update error:", err.message);
+		loge(
+			"server.js -> put(/api/cart/${id}) -> Cart update error:",
+			err.message
+		);
 		res.status(500).json({ error: "Server error" });
 	}
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server on port ${PORT}`));
+app.listen(PORT, () => log(`Server on port ${PORT}`));

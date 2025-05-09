@@ -16,13 +16,19 @@ const ProductList: React.FC<ProductListProps> = ({ addToCart }) => {
 
 	return (
 		<div className="flex flex-wrap justify-center">
-			{products.map((product) => (
-				<ProductCart
-					key={product._id}
-					product={product}
-					addToCart={addToCart}
-				/>
-			))}
+			{products.length === 0 ? (
+				<p className="text-center text-gray-600 dark:text-gray-300">
+					Empty list
+				</p>
+			) : (
+				products.map((product) => (
+					<ProductCart
+						key={product._id}
+						product={product}
+						addToCart={addToCart}
+					/>
+				))
+			)}
 		</div>
 	);
 };
