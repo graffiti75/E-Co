@@ -7,16 +7,12 @@ import Checkout from "./checkout/Checkout";
 import AuthScreen from "./auth/AuthScreen";
 import Header from "./components/Header";
 import { AuthContext } from "./auth/AuthContext";
+import { CartContext } from "./cart/CartContext";
 
 const App: React.FC = () => {
-	const {
-		user,
-		addToCart,
-		fetchCart,
-		updateCartItem,
-		removeFromCart,
-		clearCart,
-	} = useContext(AuthContext);
+	const { user } = useContext(AuthContext);
+	const { addToCart, fetchCart, updateCartItem, removeFromCart, clearCart } =
+		useContext(CartContext);
 
 	return (
 		<div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">

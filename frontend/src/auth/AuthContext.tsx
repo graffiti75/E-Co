@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios, { AxiosError } from "axios";
-import { User, CartItem, Product } from "../types/types";
+import { User, Product } from "../types/types";
 import { log } from "../utils/logger";
 
 interface ErrorResponse {
@@ -17,22 +17,12 @@ export const AuthContext = createContext<{
 	) => Promise<boolean>;
 	logout: () => void;
 	error: string | null;
-	addToCart: (product: Product) => Promise<boolean>;
-	fetchCart: () => Promise<CartItem[]>;
-	updateCartItem: (id: string, quantity: number) => Promise<boolean>;
-	removeFromCart: (id: string) => Promise<boolean>;
-	clearCart: () => void;
 }>({
 	user: null,
 	login: async () => false,
 	register: async () => false,
 	logout: () => {},
 	error: null,
-	addToCart: async () => false,
-	fetchCart: async () => [],
-	updateCartItem: async () => false,
-	removeFromCart: async () => false,
-	clearCart: () => {},
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -147,115 +137,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 		}
 	};
 
-	const fetchCart = async () => {
-		try {
-			const token = localStorage.getItem("token");
-			log(`AuthContext.fetchCart -> token: ${token}`);
-			log(
-				`AuthContext.fetchCart -> Calling GET ${
-					import.meta.env.VITE_API_URL
-				}/api/cart`
-			);
-			const res = await axios.get(
-				`${import.meta.env.VITE_API_URL}/api/cart`,
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
-			log(`AuthContext.fetchCart -> res: ${JSON.stringify(res)}`);
-			return res.data;
-		} catch (err) {
-			const axiosError = err as AxiosError<ErrorResponse>;
-			setError(
-				axiosError.response?.data?.error || "Failed to fetch cart"
-			);
-			return [];
-		}
-	};
-
-	const updateCartItem = async (id: string, quantity: number) => {
-		try {
-			const token = localStorage.getItem("token");
-			log(`AuthContext.updateCartItem -> token: ${token}`);
-			log(
-				`AuthContext.updateCartItem -> Calling PUT ${
-					import.meta.env.VITE_API_URL
-				}/api/cart/${id}`
-			);
-			log(
-				`AuthContext.updateCartItem -> id: ${id}, quantity: ${quantity}`
-			);
-			const res = await axios.put(
-				`${import.meta.env.VITE_API_URL}/api/cart/${id}`,
-				{ quantity },
-				{ headers: { Authorization: `Bearer ${token}` } }
-			);
-			log(`AuthContext.updateCartItem -> res: ${res}`);
-			setError(null);
-			return true;
-		} catch (err) {
-			const axiosError = err as AxiosError<ErrorResponse>;
-			setError(
-				axiosError.response?.data?.error || "Failed to update cart"
-			);
-			return false;
-		}
-	};
-
-	const removeFromCart = async (id: string) => {
-		try {
-			const token = localStorage.getItem("token");
-			log(`AuthContext.removeFromCart -> token: ${token}`);
-			log(
-				`AuthContext.removeFromCart -> Calling DELETE ${
-					import.meta.env.VITE_API_URL
-				}/api/cart/${id}`
-			);
-			const res = await axios.delete(
-				`${import.meta.env.VITE_API_URL}/api/cart/${id}`,
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
-			log(`AuthContext.removeFromCart -> res: ${res}`);
-			setError(null);
-			return true;
-		} catch (err) {
-			const axiosError = err as AxiosError<ErrorResponse>;
-			setError(
-				axiosError.response?.data?.error || "Failed to remove from cart"
-			);
-			return false;
-		}
-	};
-
-	const clearCart = async () => {
-		try {
-			const token = localStorage.getItem("token");
-			log(`AuthContext.clearCart -> token: ${token}`);
-			log(
-				`AuthContext.clearCart -> Calling DELETE ${
-					import.meta.env.VITE_API_URL
-				}/api/cart`
-			);
-			const res = await axios.delete(
-				`${import.meta.env.VITE_API_URL}/api/cart`,
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
-			log(`AuthContext.clearCart -> res: ${res}`);
-			setError(null);
-			return true;
-		} catch (err) {
-			const axiosError = err as AxiosError<ErrorResponse>;
-			setError(
-				axiosError.response?.data?.error || "Failed to clear cart"
-			);
-			return false;
-		}
-	};
-
 	return (
 		<AuthContext.Provider
 			value={{
@@ -264,11 +145,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 				register,
 				logout,
 				error,
-				addToCart,
-				fetchCart,
-				updateCartItem,
-				removeFromCart,
-				clearCart,
 			}}
 		>
 			{children}
