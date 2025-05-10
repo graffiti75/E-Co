@@ -30,4 +30,4 @@ function loge(message, error) {
 	console.error(`[${timestamp}] ${message}`, error);
 }
 
-module.exports = log;
+module.exports = { log, loge };

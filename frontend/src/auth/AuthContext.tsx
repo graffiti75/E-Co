@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios, { AxiosError } from "axios";
-import { User, Product } from "../types/types";
+import { User } from "../types/types";
 import { log } from "../utils/logger";
 
 interface ErrorResponse {
@@ -106,35 +106,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 		setError(null);
 		localStorage.removeItem("user");
 		localStorage.removeItem("token");
-	};
-
-	const addToCart = async (product: Product) => {
-		try {
-			const token = localStorage.getItem("token");
-			log(`AuthContext.addToCart -> token: ${token}`);
-			log(
-				`AuthContext.addToCart -> Calling POST ${
-					import.meta.env.VITE_API_URL
-				}/api/cart`
-			);
-			log(
-				`AuthContext.addToCart -> productId: ${product._id}, quantity: 1`
-			);
-			const res = await axios.post(
-				`${import.meta.env.VITE_API_URL}/api/cart`,
-				{ productId: product._id, quantity: 1 },
-				{ headers: { Authorization: `Bearer ${token}` } }
-			);
-			log(`AuthContext.addToCart -> res: ${res}`);
-			setError(null);
-			return true;
-		} catch (err) {
-			const axiosError = err as AxiosError<ErrorResponse>;
-			setError(
-				axiosError.response?.data?.error || "Failed to add to cart"
-			);
-			return false;
-		}
 	};
 
 	return (

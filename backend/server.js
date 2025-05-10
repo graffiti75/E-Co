@@ -4,8 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const log = require("./utils/logger");
-const loge = require("./utils/logger");
+const { log, loge } = require("./utils/logger");
 
 dotenv.config();
 const app = express();
@@ -249,26 +248,40 @@ app.post("/api/cart", authMiddleware, async (req, res) => {
 });
 
 app.delete("/api/cart/:id", authMiddleware, async (req, res) => {
-	log(`server.js -> delete(/api/cart/${id})`);
+	log(`server.js -> delete(/api/cart/${req.params.id}) -> Starting request`);
+	const { ObjectId } = mongoose.Types;
+	if (!ObjectId.isValid(req.params.id)) {
+		log(
+			`server.js -> delete(/api/cart/${req.params.id}) -> Invalid cart item ID`
+		);
+		return res.status(400).json({ error: "Invalid cart item ID" });
+	}
 	try {
-		await CartItem.findOneAndDelete({
-			_id: req.params.id,
+		const result = await CartItem.findOneAndDelete({
+			_id: new ObjectId(req.params.id),
 			userId: req.userId,
 		});
+		if (!result) {
+			log(
+				`server.js -> delete(/api/cart/${req.params.id}) -> Cart item not found`
+			);
+			return res.status(404).json({ error: "Cart item not found" });
+		}
+		log(`server.js -> delete(/api/cart/${req.params.id}) -> Item removed`);
 		res.json({ message: "Item removed" });
 	} catch (err) {
+		const errorMessage = err.message || "Unknown error";
 		loge(
-			"server.js -> delete(/api/cart/${id}) -> Cart delete error:",
-			err.message
+			`server.js -> delete(/api/cart/${req.params.id}) -> Cart delete error: ${errorMessage}`
 		);
 		res.status(500).json({ error: "Server error" });
 	}
 });
 
 app.put("/api/cart/:id", authMiddleware, async (req, res) => {
-	log(`server.js -> put(/api/cart/${id})`);
+	log(`server.js -> put(/api/cart/)`);
 	const { quantity } = req.body;
-	log(`server.js -> put(/api/cart/${id}) -> quantity: ${quantity}`);
+	log(`server.js -> put(/api/cart/) -> quantity: ${quantity}`);
 	if (!quantity || quantity < 1) {
 		return res.status(400).json({ error: "Valid quantity is required" });
 	}
@@ -278,7 +291,9 @@ app.put("/api/cart/:id", authMiddleware, async (req, res) => {
 			{ quantity },
 			{ new: true }
 		);
-		log(`server.js -> put(/api/cart/${id}) -> cartItem: ${cartItem}`);
+		log(
+			`server.js -> put(/api/cart/${req.params.id}) -> cartItem: ${cartItem}`
+		);
 		if (!cartItem) {
 			return res.status(404).json({ error: "Cart item not found" });
 		}

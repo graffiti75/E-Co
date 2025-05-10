@@ -1,7 +1,8 @@
 import React from "react";
 import { CartItem } from "../types/types";
-import ItemQuantityButton from "./ItemQuantityButton";
+import CartItemQuantityButton from "./CartItemQuantityButton";
 import { formatPrice } from "../utils/formatPrice";
+import { log } from "../utils/logger";
 
 interface CartItemUIProps {
 	item: CartItem;
@@ -23,11 +24,14 @@ const CartItemUI: React.FC<CartItemUIProps> = ({
 				{formatPrice(item.productId.price * item.quantity)}
 			</span>
 			<div className="flex items-center">
-				<ItemQuantityButton
+				<CartItemQuantityButton
 					item={item}
 					decrease={true}
 					updateQuantity={async (id, quantity) => {
 						const success = await updateQuantity(id, quantity);
+						log(
+							`CartItemUI.CartItemQuantityButton(decrease=true) -> success: ${success}`
+						);
 						if (success) refreshCart();
 						return success;
 					}}
@@ -35,11 +39,14 @@ const CartItemUI: React.FC<CartItemUIProps> = ({
 				<span className="mx-2 text-black dark:text-white">
 					{item.quantity}
 				</span>
-				<ItemQuantityButton
+				<CartItemQuantityButton
 					item={item}
 					decrease={false}
 					updateQuantity={async (id, quantity) => {
 						const success = await updateQuantity(id, quantity);
+						log(
+							`CartItemUI.CartItemQuantityButton(decrease=false) -> success: ${success}`
+						);
 						if (success) refreshCart();
 						return success;
 					}}

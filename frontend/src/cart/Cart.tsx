@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import { CartItem } from "../types/types";
 import CartItemUI from "./CartItemUI";
 import { formatPrice } from "../utils/formatPrice";
+import { log } from "../utils/logger";
 
 interface CartProps {
+	error: string | null;
 	fetchCart: () => Promise<CartItem[]>;
 	updateCartItem: (id: string, quantity: number) => Promise<boolean>;
 	removeFromCart: (id: string) => Promise<boolean>;
@@ -12,11 +14,13 @@ interface CartProps {
 }
 
 const Cart: React.FC<CartProps> = ({
+	error,
 	fetchCart,
 	updateCartItem,
 	removeFromCart,
 	clearCart,
 }) => {
+	log(`Cart -> error: ${error}`);
 	const [cartItems, setCartItems] = useState<CartItem[]>([]);
 	const validCartItems = cartItems.filter((item) => item.productId !== null);
 	const total = validCartItems.reduce(
@@ -37,6 +41,7 @@ const Cart: React.FC<CartProps> = ({
 			<h2 className="text-2xl font-bold mb-4 text-black dark:text-white">
 				Shopping Cart
 			</h2>
+			{error && <p className="text-red-500">{error}</p>}
 			{validCartItems.length === 0 ? (
 				<p className="text-black dark:text-white">
 					Your cart is empty.
