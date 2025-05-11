@@ -30,7 +30,7 @@ const Cart: React.FC<CartProps> = ({
 
 	useEffect(() => {
 		fetchCart().then(setCartItems).catch(console.error);
-	}, [fetchCart]);
+	}, [fetchCart, cartItems]);
 
 	const refreshCart = () => {
 		fetchCart().then(setCartItems).catch(console.error);
