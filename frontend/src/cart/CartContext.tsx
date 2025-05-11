@@ -1,6 +1,7 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useContext } from "react";
 import axios, { AxiosError } from "axios";
 import { CartItem, Product } from "../types/types";
+import { AuthContext } from "../auth/AuthContext";
 import { log } from "../utils/logger";
 
 interface ErrorResponse {
@@ -27,6 +28,21 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
 	const [error, setError] = useState<string | null>(null);
+	const { logout } = useContext(AuthContext);
+
+	const handleError = (
+		axiosError: AxiosError<ErrorResponse>,
+		defaultMessage: string
+	) => {
+		const message = axiosError.response?.data?.error || defaultMessage;
+		if (message === "Invalid token") {
+			log(
+				"CartContext.handleError -> Invalid token detected, logging out"
+			);
+			logout();
+		}
+		setError(message);
+	};
 
 	const addToCart = async (product: Product) => {
 		try {
@@ -48,10 +64,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 			return true;
 		} catch (err) {
 			const axiosError = err as AxiosError<ErrorResponse>;
-			let message =
-				axiosError.response?.data?.error || "Failed to add to cart";
-			log(`CartContext.addToCart -> ${message}`);
-			setError(message);
+			handleError(axiosError, "Failed to add to cart");
 			return false;
 		}
 	};
@@ -74,10 +87,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 			return res.data.filter((item: CartItem) => item.productId !== null);
 		} catch (err) {
 			const axiosError = err as AxiosError<ErrorResponse>;
-			let message =
-				axiosError.response?.data?.error || "Failed to fetch cart";
-			log(`CartContext.fetchCart -> ${message}`);
-			setError(message);
+			handleError(axiosError, "Failed to fetch cart");
 			return [];
 		}
 	};
@@ -102,10 +112,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 			return true;
 		} catch (err) {
 			const axiosError = err as AxiosError<ErrorResponse>;
-			let message =
-				axiosError.response?.data?.error || "Failed to update cart";
-			log(`CartContext.updateCartItem -> ${message}`);
-			setError(message);
+			handleError(axiosError, "Failed to update cart");
 			return false;
 		}
 	};
@@ -129,11 +136,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 			return true;
 		} catch (err) {
 			const axiosError = err as AxiosError<ErrorResponse>;
-			let message =
-				axiosError.response?.data?.error ||
-				"Failed to remove from cart";
-			log(`CartContext.removeFromCart -> ${message}`);
-			setError(message);
+			handleError(axiosError, "Failed to remove from cart");
 			return false;
 		}
 	};
@@ -154,10 +157,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 			return true;
 		} catch (err) {
 			const axiosError = err as AxiosError<ErrorResponse>;
-			let message =
-				axiosError.response?.data?.error || "Failed to clear cart";
-			log(`CartContext.clearCart -> ${message}`);
-			setError(message);
+			handleError(axiosError, "Failed to clear cart");
 			return false;
 		}
 	};
