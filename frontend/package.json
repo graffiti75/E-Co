@@ -9,10 +9,9 @@
 		"lint": "eslint .",
 		"preview": "vite preview",
 		"predeploy": "npm run build",
-		"deploy": "gh-pages -d dist -m '< add commit message >'"
+		"deploy": "gh-pages -d dist -m '< add commit message>'"
 	},
 	"dependencies": {
-		"axios": "^1.9.0",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
 		"react-router-dom": "^7.5.1"

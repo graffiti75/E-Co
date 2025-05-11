@@ -11,8 +11,14 @@ import { CartContext } from "./cart/CartContext";
 
 const App: React.FC = () => {
 	const { user } = useContext(AuthContext);
-	const { addToCart, fetchCart, updateCartItem, removeFromCart, clearCart } =
-		useContext(CartContext);
+	const {
+		error,
+		addToCart,
+		fetchCart,
+		updateCartItem,
+		removeFromCart,
+		clearCart,
+	} = useContext(CartContext);
 
 	return (
 		<div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
@@ -56,6 +62,7 @@ const App: React.FC = () => {
 				</Routes>
 				{user && (
 					<Cart
+						error={error}
 						fetchCart={fetchCart}
 						updateCartItem={updateCartItem}
 						removeFromCart={removeFromCart}

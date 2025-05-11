@@ -247,6 +247,25 @@ app.post("/api/cart", authMiddleware, async (req, res) => {
 	}
 });
 
+app.delete("/api/cart", authMiddleware, async (req, res) => {
+	console.log(
+		`server.js -> delete(/api/cart) -> Clearing cart for user ${req.userId}`
+	);
+	try {
+		await CartItem.deleteMany({ userId: req.userId });
+		console.log(
+			`server.js -> delete(/api/cart) -> Cart cleared for user ${req.userId}`
+		);
+		res.json({ message: "Cart cleared" });
+	} catch (err) {
+		const errorMessage = err.message || "Unknown error";
+		console.error(
+			`server.js -> delete(/api/cart) -> Cart clear error: ${errorMessage}`
+		);
+		res.status(500).json({ error: "Server error" });
+	}
+});
+
 app.delete("/api/cart/:id", authMiddleware, async (req, res) => {
 	log(`server.js -> delete(/api/cart/${req.params.id}) -> Starting request`);
 	const { ObjectId } = mongoose.Types;
