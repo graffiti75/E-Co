@@ -56,12 +56,19 @@ const CartItem = require("./models/CartItem");
 const authMiddleware = (req, res, next) => {
 	log("server.js -> authMiddleware");
 	const token = req.header("Authorization")?.replace("Bearer ", "");
-	if (!token) return res.status(401).json({ error: "No token provided" });
+	if (!token) {
+		log("server.js -> authMiddleware -> No token provided");
+		return res.status(401).json({ error: "No token provided" });
+	}
 	try {
 		const decoded = jwt.verify(token, process.env.JWT_SECRET);
+		log(
+			`server.js -> authMiddleware -> Token valid, userId: ${decoded.userId}`
+		);
 		req.userId = decoded.userId;
 		next();
 	} catch (err) {
+		log(`server.js -> authMiddleware -> Invalid token: ${err.message}`);
 		res.status(401).json({ error: "Invalid token" });
 	}
 };

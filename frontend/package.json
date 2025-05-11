@@ -9,7 +9,7 @@
 		"lint": "eslint .",
 		"preview": "vite preview",
 		"predeploy": "npm run build",
-		"deploy": "gh-pages -d dist -m 'Backend endpoint to Clear Cart fixed'"
+		"deploy": "gh-pages -d dist -m '< add commit message>'"
 	},
 	"dependencies": {
 		"react": "^19.0.0",

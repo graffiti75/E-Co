@@ -84,6 +84,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 					headers: { Authorization: `Bearer ${token}` },
 				}
 			);
+			setError(null);
 			return res.data.filter((item: CartItem) => item.productId !== null);
 		} catch (err) {
 			const axiosError = err as AxiosError<ErrorResponse>;
