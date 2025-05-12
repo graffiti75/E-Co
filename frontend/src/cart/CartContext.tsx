@@ -9,16 +9,18 @@ interface ErrorResponse {
 }
 
 export const CartContext = createContext<{
+	cartItems: CartItem[];
 	error: string | null;
 	addToCart: (product: Product) => Promise<boolean>;
-	fetchCart: () => Promise<CartItem[]>;
+	fetchCart: () => Promise<void>;
 	updateCartItem: (id: string, quantity: number) => Promise<boolean>;
 	removeFromCart: (id: string) => Promise<boolean>;
 	clearCart: () => Promise<boolean>;
 }>({
+	cartItems: [],
 	error: null,
 	addToCart: async () => false,
-	fetchCart: async () => [],
+	fetchCart: async () => {},
 	updateCartItem: async () => false,
 	removeFromCart: async () => false,
 	clearCart: async () => false,
@@ -27,6 +29,7 @@ export const CartContext = createContext<{
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
+	const [cartItems, setCartItems] = useState<CartItem[]>([]);
 	const [error, setError] = useState<string | null>(null);
 	const { logout } = useContext(AuthContext);
 
@@ -42,6 +45,32 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 			logout();
 		}
 		setError(message);
+	};
+
+	const fetchCart = async () => {
+		try {
+			const token = localStorage.getItem("token");
+			log(
+				`CartContext.fetchCart -> Calling GET ${
+					import.meta.env.VITE_API_URL
+				}/api/cart`
+			);
+			log(`CartContext.fetchCart -> token: ${token}`);
+			const res = await axios.get(
+				`${import.meta.env.VITE_API_URL}/api/cart`,
+				{
+					headers: { Authorization: `Bearer ${token}` },
+				}
+			);
+			setError(null);
+			const validData = res.data.filter(
+				(item: CartItem) => item.productId !== null
+			);
+			setCartItems(validData);
+		} catch (err) {
+			const axiosError = err as AxiosError<ErrorResponse>;
+			handleError(axiosError, "Failed to fetch cart");
+		}
 	};
 
 	const addToCart = async (product: Product) => {
@@ -61,35 +90,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 			setError(null);
+			await fetchCart();
 			return true;
 		} catch (err) {
 			const axiosError = err as AxiosError<ErrorResponse>;
 			handleError(axiosError, "Failed to add to cart");
 			return false;
-		}
-	};
-
-	const fetchCart = async () => {
-		try {
-			const token = localStorage.getItem("token");
-			log(
-				`CartContext.fetchCart -> Calling GET ${
-					import.meta.env.VITE_API_URL
-				}/api/cart`
-			);
-			log(`CartContext.fetchCart -> token: ${token}`);
-			const res = await axios.get(
-				`${import.meta.env.VITE_API_URL}/api/cart`,
-				{
-					headers: { Authorization: `Bearer ${token}` },
-				}
-			);
-			setError(null);
-			return res.data.filter((item: CartItem) => item.productId !== null);
-		} catch (err) {
-			const axiosError = err as AxiosError<ErrorResponse>;
-			handleError(axiosError, "Failed to fetch cart");
-			return [];
 		}
 	};
 
@@ -110,6 +116,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 			setError(null);
+			await fetchCart();
 			return true;
 		} catch (err) {
 			const axiosError = err as AxiosError<ErrorResponse>;
@@ -134,6 +141,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 				}
 			);
 			setError(null);
+			await fetchCart();
 			return true;
 		} catch (err) {
 			const axiosError = err as AxiosError<ErrorResponse>;
@@ -155,6 +163,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 				headers: { Authorization: `Bearer ${token}` },
 			});
 			setError(null);
+			await fetchCart();
 			return true;
 		} catch (err) {
 			const axiosError = err as AxiosError<ErrorResponse>;
@@ -166,6 +175,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 	return (
 		<CartContext.Provider
 			value={{
+				cartItems,
 				error,
 				addToCart,
 				fetchCart,

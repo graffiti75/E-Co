@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import { CartItem } from "../types/types";
 import CartItemUI from "./CartItemUI";
 import { formatPrice } from "../utils/formatPrice";
 import { log } from "../utils/logger";
+import { CartContext } from "./CartContext";
 
 interface CartProps {
 	error: string | null;
-	fetchCart: () => Promise<CartItem[]>;
+	fetchCart: () => Promise<void>;
 	updateCartItem: (id: string, quantity: number) => Promise<boolean>;
 	removeFromCart: (id: string) => Promise<boolean>;
 	clearCart: () => void;
@@ -20,20 +20,26 @@ const Cart: React.FC<CartProps> = ({
 	removeFromCart,
 	clearCart,
 }) => {
+	const { cartItems } = useContext(CartContext);
 	log(`Cart -> error: ${error}`);
-	const [cartItems, setCartItems] = useState<CartItem[]>([]);
 	const validCartItems = cartItems.filter((item) => item.productId !== null);
 	const total = validCartItems.reduce(
 		(sum, item) => sum + item.productId.price * item.quantity,
 		0
 	);
 
+	// The code below updates the Shopping Cart only after login.
 	useEffect(() => {
-		fetchCart().then(setCartItems).catch(console.error);
-	}, [fetchCart, cartItems]);
+		fetchCart()
+			.then(() => log(`Cart -> fetchCart() completed.`))
+			.catch(console.error);
+	}, []);
 
+	// The code below updates the Shopping Cart every time a CardItem is updated.
 	const refreshCart = () => {
-		fetchCart().then(setCartItems).catch(console.error);
+		fetchCart()
+			.then(() => log(`Cart -> refreshCart() completed.`))
+			.catch(console.error);
 	};
 
 	return (
