@@ -73,28 +73,78 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 		}
 	};
 
-	const addToCart = async (product: Product) => {
+	const addToCart = async (product: Product): Promise<boolean> => {
+		const authToken = localStorage.getItem("token");
+		if (!authToken) {
+			setError(
+				"Auth token not found. Cannot add to cart. You must be logged in to add items to the cart."
+			);
+			return false;
+		}
+
+		log(
+			`Product object received in addToCart: ${JSON.stringify(
+				product,
+				null,
+				2
+			)}`
+		);
+
+		// The backend expects productId (string) and quantity (number).
+		// Your frontend Product type now has 'id: string'.
+		const payload = {
+			productId: (product as any)._id, // Use the 'id' from your unified Product type
+			quantity: 1,
+		};
+
 		try {
-			const token = localStorage.getItem("token");
-			log(
-				`CartContext.addToCart -> Calling POST ${
-					import.meta.env.VITE_API_URL
-				}/api/cart`
-			);
-			log(
-				`CartContext.addToCart -> productId: ${product._id}, token: ${token}`
-			);
-			await axios.post(
+			const res = await fetch(
 				`${import.meta.env.VITE_API_URL}/api/cart`,
-				{ productId: product._id, quantity: 1 },
-				{ headers: { Authorization: `Bearer ${token}` } }
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${authToken}`,
+					},
+					body: JSON.stringify(payload),
+				}
 			);
+
+			if (!res.ok) {
+				const errorData = await res.json();
+				// const errorMessage = `Failed to add item to cart: ${
+				// 	errorData.detail || res.statusText
+				// }`;
+				console.error("Raw error data from backend:", errorData);
+
+				let detailMessage = "Unknown HTTP error";
+				if (errorData.detail && Array.isArray(errorData.detail)) {
+					detailMessage = errorData.detail
+						.map(
+							(err: any) =>
+								`Field: ${
+									err.loc?.join(" -> ") || "N/A"
+								}, Error: ${err.msg || "Unknown error detail"}`
+						)
+						.join("; ");
+				} else if (errorData.detail) {
+					detailMessage = String(errorData.detail);
+				}
+				const errorMessage = `Failed to add item to cart: ${detailMessage}`;
+				log(errorMessage);
+				setError(errorMessage);
+				return false;
+			}
+			const newCartItem = await res.json(); // This is the CartItem from the backend
+			log(`Successfully added to cart: ${newCartItem}`);
+
 			setError(null);
 			await fetchCart();
 			return true;
-		} catch (err) {
-			const axiosError = err as AxiosError<ErrorResponse>;
-			handleError(axiosError, "Failed to add to cart");
+		} catch (error) {
+			const errorMessage = `Network or other error adding to cart: ${error}`;
+			log(errorMessage);
+			setError(errorMessage);
 			return false;
 		}
 	};

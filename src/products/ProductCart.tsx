@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Product } from "../types/types";
 import { formatPrice } from "../utils/formatPrice";
-
+import { log } from "../utils/logger";
 interface ProductCartProps {
 	product: Product;
 	addToCart: (product: Product) => void;
@@ -29,7 +29,10 @@ const ProductCart: React.FC<ProductCartProps> = ({ product, addToCart }) => {
 			</Link>
 			<button
 				className="mt-2  text-white px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
-				onClick={() => addToCart(product)}
+				onClick={() => {
+					log(`ProductCart -> Product: ${JSON.stringify(product)}`);
+					addToCart(product);
+				}}
 			>
 				Add to Cart
 			</button>

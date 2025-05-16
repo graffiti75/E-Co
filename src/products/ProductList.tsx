@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ProductCart from "./ProductCart";
 import { Product } from "../types/types";
 import { fetchProducts } from "./products";
-
+import { log } from "../utils/logger";
 interface ProductListProps {
 	addToCart: (product: Product) => void;
 }
@@ -11,7 +11,22 @@ const ProductList: React.FC<ProductListProps> = ({ addToCart }) => {
 	const [products, setProducts] = useState<Product[]>([]);
 
 	useEffect(() => {
-		fetchProducts().then(setProducts).catch(console.error);
+		fetchProducts()
+			.then((fetchedProducts) => {
+				log(
+					`ProductList -> Fetched products: ${JSON.stringify(
+						fetchedProducts
+					)}`
+				);
+				// setProducts(fetchedProducts);
+				setProducts(
+					fetchedProducts.map((product) => ({
+						...product,
+						_id: product._id, // Ensure _id is included
+					}))
+				);
+			})
+			.catch(console.error);
 	}, []);
 
 	return (
