@@ -48,120 +48,126 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 	};
 
 	const fetchCart = async () => {
+		log(
+			`CartContext.fetchCart -> Calling GET ${
+				import.meta.env.VITE_API_URL
+			}/api/cart`
+		);
 		try {
 			const token = localStorage.getItem("token");
+			log(`CartContext.fetchCart -> token: ${token}`);
 			log(
 				`CartContext.fetchCart -> Calling GET ${
 					import.meta.env.VITE_API_URL
 				}/api/cart`
 			);
-			log(`CartContext.fetchCart -> token: ${token}`);
 			const res = await axios.get(
 				`${import.meta.env.VITE_API_URL}/api/cart`,
 				{
 					headers: { Authorization: `Bearer ${token}` },
 				}
 			);
+
+			// Check if response data is valid
+			if (!Array.isArray(res.data)) {
+				log(
+					`CartContext.fetchCart -> Error: Response data is not an array`
+				);
+				setError("Invalid response format");
+				return;
+			}
 			setError(null);
-			const validData = res.data.filter(
-				(item: CartItem) => item.productId !== null
-			);
-			setCartItems(validData);
+			setCartItems(res.data);
 		} catch (err) {
 			const axiosError = err as AxiosError<ErrorResponse>;
+			log(`CartContext.fetchCart -> Error: ${axiosError.message}`);
+			if (axiosError.response) {
+				log(
+					`CartContext.fetchCart -> Response status: ${axiosError.response.status}`
+				);
+				log(
+					`CartContext.fetchCart -> Response data: ${JSON.stringify(
+						axiosError.response.data,
+						null,
+						2
+					)}`
+				);
+			}
 			handleError(axiosError, "Failed to fetch cart");
 		}
 	};
 
-	const addToCart = async (product: Product): Promise<boolean> => {
+	const addToCart = async (product: Product) => {
 		const authToken = localStorage.getItem("token");
 		if (!authToken) {
 			setError(
-				"Auth token not found. Cannot add to cart. You must be logged in to add items to the cart."
+				"Auth token not found. You must be logged in to add items to the cart."
 			);
 			return false;
 		}
 
 		log(
-			`Product object received in addToCart: ${JSON.stringify(
+			`CartContext.addToCart -> Product object received in addToCart: ${JSON.stringify(
 				product,
 				null,
 				2
 			)}`
 		);
 
-		// The backend expects productId (string) and quantity (number).
-		// Your frontend Product type now has 'id: string'.
-		const payload = {
-			productId: (product as any)._id, // Use the 'id' from your unified Product type
+		log(`CartContext.addToCart -> Full product object: ${product}`);
+
+		const cartItem = {
+			product,
 			quantity: 1,
 		};
-
+		log(
+			`CartContext.addToCart -> Final payload: ${JSON.stringify(
+				cartItem
+			)}`
+		);
 		try {
-			const res = await fetch(
+			const res = await axios.post(
 				`${import.meta.env.VITE_API_URL}/api/cart`,
+				cartItem,
 				{
-					method: "POST",
 					headers: {
-						"Content-Type": "application/json",
 						Authorization: `Bearer ${authToken}`,
 					},
-					body: JSON.stringify(payload),
 				}
 			);
-
-			if (!res.ok) {
-				const errorData = await res.json();
-				// const errorMessage = `Failed to add item to cart: ${
-				// 	errorData.detail || res.statusText
-				// }`;
-				console.error("Raw error data from backend:", errorData);
-
-				let detailMessage = "Unknown HTTP error";
-				if (errorData.detail && Array.isArray(errorData.detail)) {
-					detailMessage = errorData.detail
-						.map(
-							(err: any) =>
-								`Field: ${
-									err.loc?.join(" -> ") || "N/A"
-								}, Error: ${err.msg || "Unknown error detail"}`
-						)
-						.join("; ");
-				} else if (errorData.detail) {
-					detailMessage = String(errorData.detail);
-				}
-				const errorMessage = `Failed to add item to cart: ${detailMessage}`;
-				log(errorMessage);
-				setError(errorMessage);
-				return false;
-			}
-			const newCartItem = await res.json(); // This is the CartItem from the backend
-			log(`Successfully added to cart: ${newCartItem}`);
+			log(
+				`CartContext.addToCart -> Successfully added to cart: ${JSON.stringify(
+					res.data
+				)}`
+			);
 
 			setError(null);
 			await fetchCart();
 			return true;
-		} catch (error) {
-			const errorMessage = `Network or other error adding to cart: ${error}`;
+		} catch (err) {
+			const axiosError = err as AxiosError<ErrorResponse>;
+			const errorMessage =
+				axiosError.response?.data?.error || "Failed to add to cart";
+			log(`CartContext.addToCart -> Error: ${errorMessage}`);
 			log(errorMessage);
 			setError(errorMessage);
 			return false;
 		}
 	};
 
-	const updateCartItem = async (id: string, quantity: number) => {
+	const updateCartItem = async (cartItemId: string, quantity: number) => {
 		try {
 			const token = localStorage.getItem("token");
 			log(
 				`CartContext.updateCartItem -> Calling PUT ${
 					import.meta.env.VITE_API_URL
-				}/api/cart`
+				}/api/cart/${cartItemId}`
 			);
 			log(
-				`CartContext.updateCartItem -> id: ${id}, quantity: ${quantity}, token: ${token}`
+				`CartContext.updateCartItem -> cartItemId: ${cartItemId}, quantity: ${quantity}, token: ${token}`
 			);
 			await axios.put(
-				`${import.meta.env.VITE_API_URL}/api/cart/${id}`,
+				`${import.meta.env.VITE_API_URL}/api/cart/${cartItemId}`,
 				{ quantity },
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
@@ -175,17 +181,19 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({
 		}
 	};
 
-	const removeFromCart = async (id: string) => {
+	const removeFromCart = async (cartItemId: string) => {
 		try {
 			const token = localStorage.getItem("token");
 			log(
 				`CartContext.removeFromCart -> Calling DELETE ${
 					import.meta.env.VITE_API_URL
-				}/api/cart`
+				}/api/cart/${cartItemId}`
 			);
-			log(`CartContext.removeFromCart -> id: ${id}, token: ${token}`);
+			log(
+				`CartContext.removeFromCart -> id: ${cartItemId}, token: ${token}`
+			);
 			await axios.delete(
-				`${import.meta.env.VITE_API_URL}/api/cart/${id}`,
+				`${import.meta.env.VITE_API_URL}/api/cart/${cartItemId}`,
 				{
 					headers: { Authorization: `Bearer ${token}` },
 				}

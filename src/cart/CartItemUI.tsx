@@ -6,7 +6,7 @@ import { log } from "../utils/logger";
 
 interface CartItemUIProps {
 	item: CartItem;
-	updateQuantity: (id: string, quantity: number) => Promise<boolean>;
+	updateQuantity: (cartItemId: string, quantity: number) => Promise<boolean>;
 	removeFromCart: (id: string) => Promise<boolean>;
 	refreshCart: () => void;
 }
@@ -20,8 +20,8 @@ const CartItemUI: React.FC<CartItemUIProps> = ({
 	return (
 		<div className="flex justify-between items-center mb-2">
 			<span className="text-black dark:text-white">
-				{item.productId.name} (x{item.quantity}) -
-				{formatPrice(item.productId.price * item.quantity)}
+				{item.product.name} (x{item.quantity}) -
+				{formatPrice(item.product.price * item.quantity)}
 			</span>
 			<div className="flex items-center">
 				<CartItemQuantityButton
@@ -42,8 +42,11 @@ const CartItemUI: React.FC<CartItemUIProps> = ({
 				<CartItemQuantityButton
 					item={item}
 					decrease={false}
-					updateQuantity={async (id, quantity) => {
-						const success = await updateQuantity(id, quantity);
+					updateQuantity={async (cartItemId, quantity) => {
+						const success = await updateQuantity(
+							cartItemId,
+							quantity
+						);
 						log(
 							`CartItemUI.CartItemQuantityButton(decrease=false) -> success: ${success}`
 						);
@@ -54,7 +57,8 @@ const CartItemUI: React.FC<CartItemUIProps> = ({
 				<button
 					className="ml-4 bg bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 dark:hover:bg-red-700"
 					onClick={async () => {
-						await removeFromCart(item._id);
+						const cartItemId = (item as any)._id;
+						await removeFromCart(cartItemId);
 						refreshCart();
 					}}
 				>

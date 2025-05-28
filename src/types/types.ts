@@ -5,7 +5,7 @@ export interface User {
 }
 
 export interface Product {
-	id: string; // Changed from _id
+	id: string;
 	name: string;
 	price: number;
 	description: string;
@@ -13,9 +13,9 @@ export interface Product {
 }
 
 export interface CartItem {
-	id: string; // Changed from _id
+	id: string;
 	userId: string;
-	productId: string; // Changed from 'Product' object to string ID
+	product: Product;
 	quantity: number;
 }
 

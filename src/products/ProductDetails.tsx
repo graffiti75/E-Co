@@ -16,7 +16,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ addToCart }) => {
 	useEffect(() => {
 		fetchProducts()
 			.then((products) => {
-				const found = products.find((p) => p._id === id);
+				const found = products.find((p) => p.id === id);
 				setProduct(found || null);
 			})
 			.catch(console.error);

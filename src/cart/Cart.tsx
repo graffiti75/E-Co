@@ -8,7 +8,7 @@ import { CartContext } from "./CartContext";
 interface CartProps {
 	error: string | null;
 	fetchCart: () => Promise<void>;
-	updateCartItem: (id: string, quantity: number) => Promise<boolean>;
+	updateCartItem: (cartItemId: string, quantity: number) => Promise<boolean>;
 	removeFromCart: (id: string) => Promise<boolean>;
 	clearCart: () => void;
 }
@@ -22,12 +22,14 @@ const Cart: React.FC<CartProps> = ({
 }) => {
 	const { cartItems } = useContext(CartContext);
 	log(`Cart -> error: ${error}`);
-	const validCartItems = cartItems.filter((item) => item.productId !== null);
+	const validCartItems = cartItems.filter(
+		(item) => item.product.id !== null
+	);
+	log(`Cart -> validCartItems: ${JSON.stringify(validCartItems, null, 2)}`);
 	const total = validCartItems.reduce(
-		(sum, item) => sum + item.productId.price * item.quantity,
+		(sum, item) => sum + item.product.price * item.quantity,
 		0
 	);
-
 	// The code below updates the Shopping Cart only after login.
 	useEffect(() => {
 		fetchCart()
@@ -56,7 +58,7 @@ const Cart: React.FC<CartProps> = ({
 				<>
 					{validCartItems.map((item) => (
 						<CartItemUI
-							key={item._id}
+							key={item.id}
 							item={item}
 							updateQuantity={updateCartItem}
 							removeFromCart={removeFromCart}

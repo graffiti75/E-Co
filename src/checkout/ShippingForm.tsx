@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 
 interface ShippingFormProps {
 	clearCart: () => void;
@@ -24,12 +23,6 @@ const ShippingForm: React.FC<ShippingFormProps> = ({ clearCart }) => {
 				<p>
 					Thank you, {name}! Your order will be shipped to {address}.
 				</p>
-				<Link
-					to="/"
-					className="text-blue-500 hover:underline mt-4 inline-block"
-				>
-					Back to Products
-				</Link>
 			</div>
 		);
 	}

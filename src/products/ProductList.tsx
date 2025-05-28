@@ -22,7 +22,7 @@ const ProductList: React.FC<ProductListProps> = ({ addToCart }) => {
 				setProducts(
 					fetchedProducts.map((product) => ({
 						...product,
-						_id: product._id, // Ensure _id is included
+						_id: product.id, // Ensure _id is included
 					}))
 				);
 			})
@@ -38,7 +38,7 @@ const ProductList: React.FC<ProductListProps> = ({ addToCart }) => {
 			) : (
 				products.map((product) => (
 					<ProductCart
-						key={product._id}
+						key={product.id}
 						product={product}
 						addToCart={addToCart}
 					/>

@@ -13,6 +13,7 @@ const App: React.FC = () => {
 	const { user } = useContext(AuthContext);
 	const {
 		error,
+		cartItems,
 		addToCart,
 		fetchCart,
 		updateCartItem,
@@ -51,7 +52,7 @@ const App: React.FC = () => {
 						element={
 							user ? (
 								<Checkout
-									cartItems={[]}
+									cartItems={cartItems}
 									clearCart={clearCart}
 								/>
 							) : (
