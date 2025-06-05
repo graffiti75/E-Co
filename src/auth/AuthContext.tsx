@@ -43,6 +43,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 	}, [user]);
 
 	const login = async (email: string, password: string) => {
+		log(
+			`AuthContext.login -> VITE_API_URL: ${import.meta.env.VITE_API_URL}`
+		);
 		try {
 			log(
 				`AuthContext.login -> Calling POST ${

@@ -4,12 +4,13 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": "vite",
+		"dev": "vite --mode testing",
 		"build": "tsc -b && vite build",
+		"build:production": "vite build --mode production",
 		"lint": "eslint .",
 		"preview": "vite preview",
 		"predeploy": "npm run build",
-		"deploy": "gh-pages -d dist -m 'Bugs between Frontend and Backend fixed'"
+		"deploy": "gh-pages -d dist -m 'Production database loaded on Frontend'"
 	},
 	"dependencies": {
 		"react": "^19.0.0",
