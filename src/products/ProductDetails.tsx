@@ -33,7 +33,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ addToCart }) => {
 				<img
 					src={product.imageUrl}
 					alt={product.name}
-					className="w-full h-64 md:w-1/2 object-cover rounded-lg"
+					className="w-full object-cover h-64 md:w-1/2 rounded-lg"
 				/>
 				<div className="md:ml-6 mt-4 md:mt-0">
 					<h2 className="text-3xl font-bold">{product.name}</h2>

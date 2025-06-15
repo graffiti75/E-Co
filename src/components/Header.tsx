@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { DarkModeContext } from "../context/DarkModeContext";
 import { AuthContext } from "../auth/AuthContext";
+import SearchInput from "../search/SearchInput";
 
 const Header: React.FC = () => {
 	const { isDarkMode, toggleDarkMode } = useContext(DarkModeContext);
@@ -28,6 +29,7 @@ const Header: React.FC = () => {
 						>
 							Logout
 						</button>
+						<SearchInput />
 					</>
 				) : null}
 				<button

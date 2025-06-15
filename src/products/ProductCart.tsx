@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Product } from "../types/types";
 import { formatPrice } from "../utils/formatPrice";
 import { log } from "../utils/logger";
+
 interface ProductCartProps {
 	product: Product;
 	addToCart: (product: Product) => void;
@@ -15,7 +16,7 @@ const ProductCart: React.FC<ProductCartProps> = ({ product, addToCart }) => {
 				<img
 					src={product.imageUrl}
 					alt={product.name}
-					className="w-full object-cover"
+					className="w-full object-cover h-48"
 				/>
 				<h3 className="text-lg font-bold mt-2 text-black dark:text-white">
 					{product.name}

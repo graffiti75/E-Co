@@ -8,6 +8,7 @@ import AuthScreen from "./auth/AuthScreen";
 import Header from "./components/Header";
 import { AuthContext } from "./auth/AuthContext";
 import { CartContext } from "./cart/CartContext";
+import SearchResults from "./search/SearchResults";
 
 const App: React.FC = () => {
 	const { user } = useContext(AuthContext);
@@ -27,6 +28,7 @@ const App: React.FC = () => {
 				<Header />
 				<Routes>
 					<Route path="/auth" element={<AuthScreen />} />
+					<Route path="/search" element={<SearchResults />} />
 					<Route
 						path="/"
 						element={

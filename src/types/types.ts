@@ -1,5 +1,5 @@
 export interface User {
-	id: string; // Added id
+	id: string;
 	username: string;
 	email: string;
 }
@@ -10,6 +10,7 @@ export interface Product {
 	price: number;
 	description: string;
 	imageUrl: string;
+	category: string;
 }
 
 export interface CartItem {
