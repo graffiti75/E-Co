@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react"; // Added useState
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProductList from "./products/ProductList";
 import ProductDetails from "./products/ProductDetails";
@@ -21,11 +21,19 @@ const App: React.FC = () => {
 		removeFromCart,
 		clearCart,
 	} = useContext(CartContext);
+	const [isCartVisible, setIsCartVisible] = useState(false); // State for cart visibility
+
+	const toggleCartVisibility = () => {
+		setIsCartVisible(!isCartVisible);
+		if (!isCartVisible) { // If cart is about to become visible, fetch cart items
+			fetchCart();
+		}
+	};
 
 	return (
 		<div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
 			<div className="container mx-auto p-4">
-				<Header />
+				<Header toggleCartVisibility={toggleCartVisibility} /> {/* Pass toggle function */}
 				<Routes>
 					<Route path="/auth" element={<AuthScreen />} />
 					<Route path="/search" element={<SearchResults />} />
@@ -63,10 +71,10 @@ const App: React.FC = () => {
 						}
 					/>
 				</Routes>
-				{user && (
+				{user && isCartVisible && ( // Conditionally render Cart
 					<Cart
 						error={error}
-						fetchCart={fetchCart}
+						fetchCart={fetchCart} // fetchCart is already called in toggleCartVisibility, but keeping it here won't harm
 						updateCartItem={updateCartItem}
 						removeFromCart={removeFromCart}
 						clearCart={clearCart}

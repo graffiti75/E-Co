@@ -26,6 +26,8 @@ const SearchInput: React.FC = () => {
 		setQuery(""); // Reset query when location changes
 	}, [location]);
 
+import SearchIcon from "../components/icons/SearchIcon"; // Import SearchIcon
+
 	return (
 		<div className="flex items-center">
 			<input
@@ -33,13 +35,14 @@ const SearchInput: React.FC = () => {
 				value={query}
 				onChange={(e) => setQuery(e.target.value)}
 				placeholder="Search products..."
-				className="p-2 border rounded bg-white dark:bg-black"
+				className="p-2 border rounded bg-white dark:bg-black text-black dark:text-white" // Ensure text color is appropriate
 			/>
 			<button
 				onClick={handleSearch}
-				className="ml-2 bg-blue-500 text-white px-4 py-2 rounded"
+				className="ml-2 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" // Modernized button style
+				aria-label="Search"
 			>
-				Search
+				<SearchIcon className="h-6 w-6 text-black dark:text-white" />
 			</button>
 		</div>
 	);
