@@ -28,20 +28,20 @@ const SearchInput: React.FC = () => {
 	}, [location]);
 
 	return (
-		<div className="flex items-center">
+		<div className="relative flex items-center"> {/* Added relative positioning */}
 			<input
 				type="text"
 				value={query}
 				onChange={(e) => setQuery(e.target.value)}
 				placeholder="Search products..."
-				className="p-2 border rounded bg-white dark:bg-black text-black dark:text-white" // Ensure text color is appropriate
+				className="p-2 pr-10 border rounded bg-white dark:bg-black text-black dark:text-white w-full" // Added pr-10 for padding right, w-full
 			/>
 			<button
 				onClick={handleSearch}
-				className="ml-2 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700" // Modernized button style
+				className="absolute right-0 top-0 h-full px-3 flex items-center rounded-r-md hover:bg-gray-100 dark:hover:bg-gray-700" // Positioned icon button
 				aria-label="Search"
 			>
-				<SearchIcon className="h-6 w-6 text-black dark:text-white" />
+				<SearchIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" /> {/* Adjusted icon size and color */}
 			</button>
 		</div>
 	);

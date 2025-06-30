@@ -49,18 +49,23 @@ const Header: React.FC<HeaderProps> = ({ toggleCartVisibility }) => {
 
 	return (
 		<div className="flex justify-between items-center mb-8">
+			{/* Left Section */}
 			<div className="flex items-center space-x-4">
 				<Link to="/" aria-label="Home">
 					<HomeIcon className="h-8 w-8 text-black dark:text-white hover:text-gray-700 dark:hover:text-gray-300" />
 				</Link>
 				<h1 className="text-3xl font-bold">E-Commerce Store</h1>
+				{user && (
+					<span className="text-black dark:text-white ml-4"> {/* Username next to title */}
+						Welcome, {user.username}
+					</span>
+				)}
 			</div>
+
+			{/* Right Section */}
 			<div className="flex items-center space-x-4">
 				{user ? (
 					<>
-						<span className="text-black dark:text-white mr-2">
-							Welcome, {user.username}
-						</span>
 						<SearchInput />
 						<div className="relative" ref={settingsRef}>
 							<button
@@ -104,6 +109,17 @@ const Header: React.FC<HeaderProps> = ({ toggleCartVisibility }) => {
 							<ShoppingCartIcon className="h-6 w-6 text-black dark:text-white" />
 						</button>
 						<button
+							onClick={toggleDarkMode}
+							className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+							aria-label={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+						>
+							{isDarkMode ? (
+								<SunIcon className="h-6 w-6 text-black dark:text-white" />
+							) : (
+								<MoonIcon className="h-6 w-6 text-black dark:text-white" />
+							)}
+						</button>
+						<button // Logout button is now the right-most among user-specific icons
 							onClick={handleLogout}
 							className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
 							aria-label="Logout"
@@ -111,18 +127,20 @@ const Header: React.FC<HeaderProps> = ({ toggleCartVisibility }) => {
 							<LogoutIcon className="h-6 w-6 text-black dark:text-white" />
 						</button>
 					</>
-				) : null}
-				<button
-					onClick={toggleDarkMode}
-					className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-					aria-label={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-				>
-					{isDarkMode ? (
-						<SunIcon className="h-6 w-6 text-black dark:text-white" />
-					) : (
-						<MoonIcon className="h-6 w-6 text-black dark:text-white" />
-					)}
-				</button>
+				) : (
+					// If no user, only DarkMode toggle is shown on the right (or other public icons if any)
+					<button
+						onClick={toggleDarkMode}
+						className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+						aria-label={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+					>
+						{isDarkMode ? (
+							<SunIcon className="h-6 w-6 text-black dark:text-white" />
+						) : (
+							<MoonIcon className="h-6 w-6 text-black dark:text-white" />
+						)}
+					</button>
+				)}
 			</div>
 		</div>
 	);
