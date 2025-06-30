@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react"; // Added useState
-import { Routes, Route, Navigate } from "react-router-dom";
+import React, { useContext, useState, useEffect } from "react"; // Added useEffect
+import { Routes, Route, Navigate, useLocation } from "react-router-dom"; // Added useLocation
 import ProductList from "./products/ProductList";
 import ProductDetails from "./products/ProductDetails";
 import Cart from "./cart/Cart";
@@ -30,19 +30,32 @@ const App: React.FC = () => {
 		}
 	};
 
+	const location = useLocation(); // Get location object
+
+	useEffect(() => {
+		// If navigation occurs (location changes) and cart is visible, hide the cart.
+		if (isCartVisible) {
+			setIsCartVisible(false);
+		}
+	}, [location]); // Re-run effect when location changes
+
 	return (
 		<div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white">
 			<div className="container mx-auto p-4">
 				<Header toggleCartVisibility={toggleCartVisibility} />
-				{user && isCartVisible ? (
-					<Cart
-						error={error}
-						fetchCart={fetchCart}
-						updateCartItem={updateCartItem}
-						removeFromCart={removeFromCart}
-						clearCart={clearCart}
-						toggleCartVisibility={toggleCartVisibility} // Pass down the function
-					/>
+				{isCartVisible ? (
+					user ? (
+						<Cart
+							error={error}
+							fetchCart={fetchCart}
+							updateCartItem={updateCartItem}
+							removeFromCart={removeFromCart}
+							clearCart={clearCart}
+							toggleCartVisibility={toggleCartVisibility}
+						/>
+					) : (
+						<Navigate to="/auth" replace /> // Redirect to auth if cart is opened without user
+					)
 				) : (
 					<Routes>
 						<Route path="/auth" element={<AuthScreen />} />
