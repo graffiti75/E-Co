@@ -41,9 +41,9 @@ const ProductList: React.FC<ProductListProps> = ({ addToCart }) => {
 
 	if (isLoading) {
 		return (
-			<p className="text-center text-gray-600 dark:text-gray-300 mt-8">
-				Loading products...
-			</p>
+			<div className="flex justify-center items-center h-64"> {/* Container to help center spinner */}
+				<div className="loader"></div>
+			</div>
 		);
 	}
 
