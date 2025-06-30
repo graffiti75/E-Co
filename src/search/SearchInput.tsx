@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../auth/AuthContext";
 import { log } from "../utils/logger";
+import SearchIcon from "../components/icons/SearchIcon"; // Import SearchIcon
 
 const SearchInput: React.FC = () => {
 	const [query, setQuery] = useState("");
@@ -25,8 +26,6 @@ const SearchInput: React.FC = () => {
 	useEffect(() => {
 		setQuery(""); // Reset query when location changes
 	}, [location]);
-
-import SearchIcon from "../components/icons/SearchIcon"; // Import SearchIcon
 
 	return (
 		<div className="flex items-center">
