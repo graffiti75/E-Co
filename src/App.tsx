@@ -6,6 +6,7 @@ import Cart from "./cart/Cart";
 import Checkout from "./checkout/Checkout";
 import AuthScreen from "./auth/AuthScreen";
 import Header from "./components/Header";
+import Hero from "./components/Hero";
 import { AuthContext } from "./auth/AuthContext";
 import { CartContext } from "./cart/CartContext";
 import SearchResults from "./search/SearchResults";
@@ -33,7 +34,10 @@ const App: React.FC = () => {
 						path="/"
 						element={
 							user ? (
-								<ProductList addToCart={addToCart} />
+								<>
+									<Hero />
+									<ProductList addToCart={addToCart} />
+								</>
 							) : (
 								<Navigate to="/auth" />
 							)
@@ -63,15 +67,6 @@ const App: React.FC = () => {
 						}
 					/>
 				</Routes>
-				{user && (
-					<Cart
-						error={error}
-						fetchCart={fetchCart}
-						updateCartItem={updateCartItem}
-						removeFromCart={removeFromCart}
-						clearCart={clearCart}
-					/>
-				)}
 			</div>
 		</div>
 	);

@@ -27,17 +27,17 @@ const SearchInput: React.FC = () => {
 	}, [location]);
 
 	return (
-		<div className="flex items-center">
+		<div className="flex items-center w-full">
 			<input
 				type="text"
 				value={query}
 				onChange={(e) => setQuery(e.target.value)}
 				placeholder="Search products..."
-				className="p-2 border rounded bg-white dark:bg-black"
+				className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-l-md bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
 			/>
 			<button
 				onClick={handleSearch}
-				className="ml-2 bg-blue-500 text-white px-4 py-2 rounded"
+				className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600"
 			>
 				Search
 			</button>
