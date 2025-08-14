@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../auth/AuthContext";
 import { log } from "../utils/logger";
-import SearchIcon from "../components/icons/SearchIcon"; // Import SearchIcon
 
 const SearchInput: React.FC = () => {
 	const [query, setQuery] = useState("");
@@ -28,20 +27,19 @@ const SearchInput: React.FC = () => {
 	}, [location]);
 
 	return (
-		<div className="relative flex items-center"> {/* Added relative positioning */}
+		<div className="flex items-center w-full">
 			<input
 				type="text"
 				value={query}
 				onChange={(e) => setQuery(e.target.value)}
 				placeholder="Search products..."
-				className="p-2 pr-10 border rounded bg-white dark:bg-black text-black dark:text-white w-full" // Added pr-10 for padding right, w-full
+				className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-l-md bg-white dark:bg-gray-700 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
 			/>
 			<button
 				onClick={handleSearch}
-				className="absolute right-0 top-0 h-full px-3 flex items-center rounded-r-md hover:bg-gray-100 dark:hover:bg-gray-700" // Positioned icon button
-				aria-label="Search"
+				className="bg-blue-500 text-white px-4 py-2 rounded-r-md hover:bg-blue-600"
 			>
-				<SearchIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" /> {/* Adjusted icon size and color */}
+				Search
 			</button>
 		</div>
 	);

@@ -11,7 +11,6 @@ interface CartProps {
 	updateCartItem: (cartItemId: string, quantity: number) => Promise<boolean>;
 	removeFromCart: (id: string) => Promise<boolean>;
 	clearCart: () => void;
-	toggleCartVisibility: () => void; // Added prop
 }
 
 const Cart: React.FC<CartProps> = ({
@@ -20,13 +19,10 @@ const Cart: React.FC<CartProps> = ({
 	updateCartItem,
 	removeFromCart,
 	clearCart,
-	toggleCartVisibility, // Destructure prop
 }) => {
 	const { cartItems } = useContext(CartContext);
 	log(`Cart -> error: ${error}`);
-	const validCartItems = cartItems.filter(
-		(item) => item.product.id !== null
-	);
+	const validCartItems = cartItems.filter((item) => item.product.id !== null);
 	log(`Cart -> validCartItems: ${JSON.stringify(validCartItems, null, 2)}`);
 	const total = validCartItems.reduce(
 		(sum, item) => sum + item.product.price * item.quantity,
@@ -80,11 +76,6 @@ const Cart: React.FC<CartProps> = ({
 						<Link
 							to="/checkout"
 							className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 dark:hover:bg-green-700"
-							onClick={() => {
-								if (cartItems.length > 0) { // Only toggle if cart is not empty, to allow navigation
-									toggleCartVisibility();
-								}
-							}}
 						>
 							Checkout
 						</Link>

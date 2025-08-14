@@ -1,148 +1,81 @@
 import React, { useContext } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { DarkModeContext } from "../context/DarkModeContext";
 import { AuthContext } from "../auth/AuthContext";
+import { CartContext } from "../cart/CartContext";
 import SearchInput from "../search/SearchInput";
-import HomeIcon from "./icons/HomeIcon";
-import SettingsIcon from "./icons/SettingsIcon";
-import ShoppingCartIcon from "./icons/ShoppingCartIcon";
-import LogoutIcon from "./icons/LogoutIcon"; // Import LogoutIcon
-import SunIcon from "./icons/SunIcon"; // Import SunIcon
-import MoonIcon from "./icons/MoonIcon"; // Import MoonIcon
 
-
-interface HeaderProps {
-	toggleCartVisibility: () => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ toggleCartVisibility }) => {
+const Header: React.FC = () => {
 	const { isDarkMode, toggleDarkMode } = useContext(DarkModeContext);
 	const { user, logout } = useContext(AuthContext);
+	const { cartItems } = useContext(CartContext);
 	const navigate = useNavigate();
-	const [isSettingsDropdownOpen, setIsSettingsDropdownOpen] = React.useState(false);
-	const settingsRef = React.useRef<HTMLDivElement>(null);
 
 	const handleLogout = () => {
 		logout();
 		navigate("/auth");
 	};
 
-	const handleSettingsClick = () => {
-		setIsSettingsDropdownOpen(prev => !prev);
-	};
-
-	React.useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
-				setIsSettingsDropdownOpen(false);
-			}
-		};
-		if (isSettingsDropdownOpen) {
-			document.addEventListener("mousedown", handleClickOutside);
-		} else {
-			document.removeEventListener("mousedown", handleClickOutside);
-		}
-		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
-	}, [isSettingsDropdownOpen]);
-
 	return (
-		<div className="flex justify-between items-center mb-8">
-			{/* Left Section */}
-			<div className="flex items-center space-x-4">
-				<Link to="/" aria-label="Home">
-					<HomeIcon className="h-8 w-8 text-black dark:text-white hover:text-gray-700 dark:hover:text-gray-300" />
-				</Link>
-				<h1 className="text-3xl font-bold">E-Commerce Store</h1>
-				{user && (
-					<span className="text-black dark:text-white ml-4"> {/* Username next to title */}
-						Welcome, {user.username}
-					</span>
-				)}
-			</div>
+		<header className="bg-white dark:bg-gray-800 shadow-md">
+			<div className="container mx-auto px-4 py-2 flex justify-between items-center">
+				<div className="flex items-center space-x-2">
+					<h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+						E-Co
+					</h1>
+				</div>
 
-			{/* Right Section */}
-			<div className="flex items-center space-x-4">
-				{user ? (
-					<>
-						<SearchInput />
-						<div className="relative" ref={settingsRef}>
+				<div className="flex-1 max-w-2xl">
+					<SearchInput />
+				</div>
+
+				<div className="flex items-center space-x-4">
+					{user ? (
+						<>
+							<span className="text-gray-600 dark:text-gray-300">
+								Welcome, {user.username}
+							</span>
 							<button
-								onClick={handleSettingsClick}
-								className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-								aria-label="Settings"
-								aria-expanded={isSettingsDropdownOpen}
+								className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+								onClick={handleLogout}
 							>
-								<SettingsIcon className="h-6 w-6 text-black dark:text-white" />
+								Logout
 							</button>
-							{isSettingsDropdownOpen && (
-								<div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
-									<Link
-										to="/account"
-										className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 w-full text-left"
-										onClick={() => {
-											console.log("Your Account clicked");
-											setIsSettingsDropdownOpen(false);
-										}}
-									>
-										Your Account
-									</Link>
-									<Link
-										to="/orders"
-										className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 w-full text-left"
-										onClick={() => {
-											console.log("Your Purchases clicked");
-											setIsSettingsDropdownOpen(false);
-										}}
-									>
-										Your Purchases
-									</Link>
-								</div>
-							)}
-						</div>
-						<button
-							onClick={toggleCartVisibility}
-							className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-							aria-label="Shopping Cart"
-						>
-							<ShoppingCartIcon className="h-6 w-6 text-black dark:text-white" />
-						</button>
-						<button
-							onClick={toggleDarkMode}
-							className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-							aria-label={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-						>
-							{isDarkMode ? (
-								<SunIcon className="h-6 w-6 text-black dark:text-white" />
-							) : (
-								<MoonIcon className="h-6 w-6 text-black dark:text-white" />
-							)}
-						</button>
-						<button // Logout button is now the right-most among user-specific icons
-							onClick={handleLogout}
-							className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-							aria-label="Logout"
-						>
-							<LogoutIcon className="h-6 w-6 text-black dark:text-white" />
-						</button>
-					</>
-				) : (
-					// If no user, only DarkMode toggle is shown on the right (or other public icons if any)
-					<button
-						onClick={toggleDarkMode}
-						className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-						aria-label={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+						</>
+					) : null}
+					<Link
+						to="/cart"
+						className="relative text-gray-600 dark:text-gray-300"
 					>
-						{isDarkMode ? (
-							<SunIcon className="h-6 w-6 text-black dark:text-white" />
-						) : (
-							<MoonIcon className="h-6 w-6 text-black dark:text-white" />
+						<svg
+							className="h-6 w-6"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="2"
+								d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+							></path>
+						</svg>
+						{cartItems.length > 0 && (
+							<span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+								{cartItems.length}
+							</span>
 						)}
+					</Link>
+					<button
+						className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white px-3 py-1 rounded"
+						onClick={toggleDarkMode}
+					>
+						{isDarkMode ? "Light" : "Dark"}
 					</button>
-				)}
+				</div>
 			</div>
-		</div>
+		</header>
 	);
 };
 
