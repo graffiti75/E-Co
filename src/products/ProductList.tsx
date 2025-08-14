@@ -18,13 +18,7 @@ const ProductList: React.FC<ProductListProps> = ({ addToCart }) => {
 						fetchedProducts
 					)}`
 				);
-				// setProducts(fetchedProducts);
-				setProducts(
-					fetchedProducts.map((product) => ({
-						...product,
-						_id: product.id, // Ensure _id is included
-					}))
-				);
+				setProducts(fetchedProducts);
 			})
 			.catch(console.error);
 	}, []);

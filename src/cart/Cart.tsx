@@ -58,7 +58,7 @@ const Cart: React.FC<CartProps> = ({
 				<>
 					{validCartItems.map((item) => (
 						<CartItemUI
-							key={item.id}
+							key={item._id}
 							item={item}
 							updateQuantity={updateCartItem}
 							removeFromCart={removeFromCart}
