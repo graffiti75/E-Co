@@ -3,19 +3,14 @@ import ProductCart from "./ProductCart";
 import { Product } from "../types/types";
 import { fetchProducts } from "./products";
 import { log } from "../utils/logger";
-
 interface ProductListProps {
 	addToCart: (product: Product) => void;
 }
 
 const ProductList: React.FC<ProductListProps> = ({ addToCart }) => {
 	const [products, setProducts] = useState<Product[]>([]);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		setIsLoading(true);
-		setError(null);
 		fetchProducts()
 			.then((fetchedProducts) => {
 				log(
@@ -23,42 +18,15 @@ const ProductList: React.FC<ProductListProps> = ({ addToCart }) => {
 						fetchedProducts
 					)}`
 				);
-				setProducts(
-					fetchedProducts.map((product) => ({
-						...product,
-						_id: product.id,
-					}))
-				);
+				setProducts(fetchedProducts);
 			})
-			.catch((err) => {
-				console.error("Failed to fetch products:", err);
-				setError("Failed to load products. Please try again later.");
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
+			.catch(console.error);
 	}, []);
-
-	if (isLoading) {
-		return (
-			<div className="flex justify-center items-center h-64"> {/* Container to help center spinner */}
-				<div className="loader"></div>
-			</div>
-		);
-	}
-
-	if (error) {
-		return (
-			<p className="text-center text-red-500 dark:text-red-400 mt-8">
-				{error}
-			</p>
-		);
-	}
 
 	return (
 		<div className="flex flex-wrap justify-center">
 			{products.length === 0 ? (
-				<p className="text-center text-gray-600 dark:text-gray-300 mt-8">
+				<p className="text-center text-gray-600 dark:text-gray-300">
 					Empty list
 				</p>
 			) : (
