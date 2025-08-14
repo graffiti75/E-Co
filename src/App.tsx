@@ -66,6 +66,22 @@ const App: React.FC = () => {
 							)
 						}
 					/>
+					<Route
+						path="/cart"
+						element={
+							user ? (
+								<Cart
+									error={error}
+									fetchCart={fetchCart}
+									updateCartItem={updateCartItem}
+									removeFromCart={removeFromCart}
+									clearCart={clearCart}
+								/>
+							) : (
+								<Navigate to="/auth" />
+							)
+						}
+					/>
 				</Routes>
 			</div>
 		</div>
