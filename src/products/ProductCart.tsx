@@ -28,7 +28,7 @@ const ProductCart: React.FC<ProductCartProps> = ({ product, addToCart }) => {
 		<div className="border rounded-lg p-4 m-2 w-72 shadow-lg bg-white dark:bg-gray-800 transform transition-transform duration-300 hover:scale-105">
 			<Link to={`/products/${product.id}`}>
 				<img
-					src={product.image}
+					src={product.imageUrl}
 					alt={product.name}
 					className="w-full object-cover h-48 rounded-t-lg"
 				/>
