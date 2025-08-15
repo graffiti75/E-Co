@@ -3,8 +3,13 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { Product } from "../types/types";
 import { log } from "../utils/logger";
+import ProductCart from "../products/ProductCart";
 
-const SearchResults: React.FC = () => {
+interface SearchResultsProps {
+	addToCart: (product: Product) => void;
+}
+
+const SearchResults: React.FC<SearchResultsProps> = ({ addToCart }) => {
 	const [products, setProducts] = useState<Product[]>([]);
 	const [loading, setLoading] = useState(true);
 	const location = useLocation();
@@ -52,14 +57,11 @@ const SearchResults: React.FC = () => {
 			) : (
 				<div className="flex flex-wrap justify-center">
 					{products.map((product) => (
-						<div
+						<ProductCart
 							key={product.id}
-							className="m-4 p-4 border rounded"
-						>
-							<h3>{product.name}</h3>
-							<p>{product.category}</p>
-							<p>${product.price}</p>
-						</div>
+							product={product}
+							addToCart={addToCart}
+						/>
 					))}
 				</div>
 			)}

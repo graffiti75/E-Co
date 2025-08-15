@@ -30,7 +30,10 @@ const App: React.FC = () => {
 				<Header />
 				<Routes>
 					<Route path="/auth" element={<AuthScreen />} />
-					<Route path="/search" element={<SearchResults />} />
+					<Route
+						path="/search"
+						element={<SearchResults addToCart={addToCart} />}
+					/>
 					<Route
 						path="/"
 						element={
