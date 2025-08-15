@@ -3,6 +3,7 @@ import ProductCart from "./ProductCart";
 import { Product } from "../types/types";
 import { fetchProducts } from "./products";
 import { log } from "../utils/logger";
+
 interface ProductListProps {
 	addToCart: (product: Product) => void;
 }

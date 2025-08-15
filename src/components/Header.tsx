@@ -16,11 +16,18 @@ const Header: React.FC = () => {
 		navigate("/auth");
 	};
 
+	const goToHome = () => {
+		navigate("/");
+	};
+
 	return (
 		<header className="bg-white dark:bg-gray-800 shadow-md">
 			<div className="container mx-auto px-4 py-2 flex justify-between items-center">
 				<div className="flex items-center space-x-2">
-					<h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+					<h1
+						className="text-2xl font-bold text-gray-800 dark:text-white cursor-pointer"
+						onClick={goToHome}
+					>
 						E-Co
 					</h1>
 				</div>
